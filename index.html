@@ -2,6 +2,9 @@
 
 
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -506,7 +509,7 @@
                     <h3></h3>
                     <div class="info-field">
                         <label>1.CLI Name &amp; HQ:</label>
-                        <select id="cli1Name">
+                        <select id="cli1Name" onchange="toggleOtherInput('cli1Name','cli1NameOther')">
                             <option value="">Select CLI Name and HQ</option>
                             <option>A K REDDY/CLI/BIA</option><option>A.R.TARAM/CLI/BIA</option>
                             <option>ABDUL MOIN KHAN/CLI/BIA</option><option>AKHILESH KUMAR/CLI/BIA</option>
@@ -543,6 +546,7 @@
                             <option>Y. RAMU/CLI/BIA</option><option>YOGESH KUMAR MIHAULIA/CLI/BIA</option>
                             <option>OTHERS</option>
                         </select>
+                        <input type="text" id="cli1NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
                     </div>
                     
                     <div class="info-field" style="margin-top:8px;">
@@ -563,7 +567,7 @@
                     <h3></h3>
                     <div class="info-field">
                         <label>CLI Name &amp; HQ:</label>
-                        <select id="cli2Name">
+                        <select id="cli2Name" onchange="toggleOtherInput('cli2Name','cli2NameOther')">
                             <option value="">Select CLI Name and HQ</option>
                             <option>A K REDDY/CLI/BIA</option><option>A.R.TARAM/CLI/BIA</option>
                             <option>ABDUL MOIN KHAN/CLI/BIA</option><option>AKHILESH KUMAR/CLI/BIA</option>
@@ -600,6 +604,7 @@
                             <option>Y. RAMU/CLI/BIA</option><option>YOGESH KUMAR MIHAULIA/CLI/BIA</option>
                             <option>OTHERS</option>
                         </select>
+                        <input type="text" id="cli2NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
                     </div>
                    
                     <div class="info-field" style="margin-top:6px;">
@@ -620,14 +625,14 @@
 
         <input type="file" id="draftFileInput" accept=".json" onchange="handleDraftUpload(event)" style="display:none;">
 
+        <div id="message" class="message"></div>
+
         <div class="button-group">
             <button class="save-draft-btn" onclick="saveDraft()">💾 Save Draft</button>
             <button class="upload-draft-btn" onclick="document.getElementById('draftFileInput').click()">📂 Upload Draft</button>
             <button class="submit-btn" onclick="submitForm()">✅ Submit</button>
             <button class="pdf-btn" onclick="generatePDF()">📄 Generate PDF</button>
         </div>
-
-        <div id="message" class="message"></div>
 
     </div><!-- /form-container -->
 </div><!-- /container -->
@@ -687,11 +692,28 @@ function buildChecklist(items, bodyId, prefix) {
     });
 }
 
+// ── OTHERS textbox toggle ─────────────────────────────────────────────────────
+function toggleOtherInput(selectId, inputId) {
+    const sel = document.getElementById(selectId);
+    const inp = document.getElementById(inputId);
+    if (!sel || !inp) return;
+    if (sel.value === 'OTHERS') {
+        inp.style.display = 'block';
+        inp.focus();
+    } else {
+        inp.style.display = 'none';
+        inp.value = '';
+    }
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function showMessage(text, type) {
     const el = document.getElementById('message');
     el.textContent = text; el.className = 'message ' + type; el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 3000);
+    // errors stay 5s, success 3s
+    const dur = type === 'error' ? 5000 : 3000;
+    clearTimeout(el._timer);
+    el._timer = setTimeout(() => el.style.display = 'none', dur);
 }
 
 function previewSig(event, previewId, imgId) {
@@ -707,6 +729,10 @@ function previewSig(event, previewId, imgId) {
 
 // ── Collect data ──────────────────────────────────────────────────────────────
 function getVal(id){ const el=document.getElementById(id); return el?el.value:''; }
+function getCLIName(selectId, otherId) {
+    const val = getVal(selectId);
+    return val === 'OTHERS' ? (getVal(otherId) || 'OTHERS') : val;
+}
 function collectData() {
     const d = {
         inspOfficialName: getVal('inspOfficialName'),
@@ -726,8 +752,8 @@ function collectData() {
         otherObs:  collectSection('other', OTHER_OBS_ITEMS.length),
         grievance: collectSection('sg', 3),
         otherRemarks: getVal('otherRemarks'),
-        cli1: { name: getVal('cli1Name'), place: getVal('cli1Place'), date: getVal('cli1Date') },
-        cli2: { name: getVal('cli2Name'), place: getVal('cli2Place'), date: getVal('cli2Date') },
+        cli1: { name: getCLIName('cli1Name','cli1NameOther'), place: getVal('cli1Place'), date: getVal('cli1Date') },
+        cli2: { name: getCLIName('cli2Name','cli2NameOther'), place: getVal('cli2Place'), date: getVal('cli2Date') },
     };
     return d;
 }
@@ -737,8 +763,97 @@ function collectSection(prefix, count) {
     return arr;
 }
 
+// ── Submit state flag ─────────────────────────────────────────────────────────
+let dataSubmitted = false;
+
 // ── Submit ────────────────────────────────────────────────────────────────────
-function submitForm() { console.log(collectData()); showMessage('Form submitted successfully!', 'success'); }
+const SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7WDM2HP5ukVhVtQCS2fwdJ2BvKnv9xszb8gMMK273j90Njwb5_nmtfgikZSdGYReciw/exec";
+
+function submitForm() {
+    if (dataSubmitted) {
+        showMessage('⚠️ Data Already Submitted! Cannot submit again.', 'error');
+        return;
+    }
+
+    const d = collectData();
+
+    if (!d.inspOfficialName || !d.runningRoom) {
+        showMessage('❌ Please fill Inspecting Official Name and Running Room before submitting.', 'error');
+        return;
+    }
+
+    const recLabels    = ['Occupancy Board','Max & Avg Occupancy','Linen/Blankets/Nets','Complaint Book','First Aid Box','Staff Deployment','JAG Inspection Details'];
+    const roomLabels   = ['Room Cleanliness','Mosquito Repellent','AC Working','Mattresses & Pillows','Night Lamp','Door Noise','Outsider Nuisance','Mobile Silent Display','Water Seepage'];
+    const toiletLabels = ['Toilet Cleanliness','Exhaust Fans','Greaser','Water Accumulation'];
+    const kitchenLabels= ['Kitchen Cleanliness','Exhaust/Chimney','Refrigerator','Raw Food Quality','Meal List Displayed','Food Standard Quality','Wash Basin & Hand Wash','Cook/Bearer Hygiene','Utensils Condition'];
+    const otherLabels  = ['Meditation Room','Newspapers/Magazines','Safety Posters','Fire Extinguishers','Foot Massager','Deficiency/Suggestions'];
+    const sgLabels     = ['Grievance Register','Pending Grievance','Staff Welfare Awareness'];
+
+    function sectionText(label, items, labels) {
+        return label + ': ' + items.map((r,i) =>
+            (labels[i]||('Item '+(i+1))) + '=' + (r.q||'-') + (r.r ? '['+r.r+']' : '')
+        ).join(' | ');
+    }
+
+    const otherObservations =
+        'INSPECTOR: ' + d.inspOfficialName + ' (' + d.inspDesignation + ')\n' +
+        sectionText('RECEPTION', d.reception, recLabels) + '\n' +
+        sectionText('ROOMS', d.rooms, roomLabels) + '\n' +
+        sectionText('TOILETS', d.toilets, toiletLabels) + '\n' +
+        sectionText('KITCHEN', d.kitchen, kitchenLabels) + '\n' +
+        sectionText('OTHER OBS', d.otherObs, otherLabels) + '\n' +
+        sectionText('GRIEVANCE', d.grievance, sgLabels);
+
+    const defWords = ['POOR','NO','NOT WORKING','NOT AVAILABLE','NOT CLEAN','NOT CLEANED'];
+    function findDef(items, labels) {
+        return items.map((r,i) =>
+            defWords.some(w => (r.q||'').toUpperCase().includes(w))
+                ? (labels[i]||('Item '+(i+1))) + ': ' + r.q + (r.r ? ' ('+r.r+')' : '')
+                : null
+        ).filter(Boolean);
+    }
+    const allDef = [
+        ...findDef(d.reception, recLabels),
+        ...findDef(d.rooms, roomLabels),
+        ...findDef(d.toilets, toiletLabels),
+        ...findDef(d.kitchen, kitchenLabels),
+        ...findDef(d.otherObs, otherLabels),
+        ...findDef(d.grievance, sgLabels),
+    ];
+    const deficiencyText = allDef.length ? allDef.join(' | ') : (d.otherRemarks || 'NIL');
+
+    const params = new URLSearchParams();
+    params.append('sheet',             'Running Room');
+    params.append('cliName1',          d.cli1.name + (d.cli1.place ? ' / ' + d.cli1.place : ''));
+    params.append('cliName2',          d.cli2.name + (d.cli2.place ? ' / ' + d.cli2.place : ''));
+    params.append('date',              d.inspDate);
+    params.append('time',              '');
+    params.append('dateOfInspection',  d.gi.date);
+    params.append('nameOfRunningRoom', d.runningRoom);
+    params.append('lobbyIncharge',     (d.gi.rly || '') + (d.gi.agency ? ' / ' + d.gi.agency : ''));
+    params.append('otherObservations', otherObservations);
+    params.append('railway',           d.gi.rly || '');
+    params.append('deficiency',        deficiencyText);
+
+    showMessage('⏳ Saving to Google Sheet…', 'success');
+
+    fetch(SHEET_SCRIPT_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    params.toString()
+    })
+    .then(() => {
+        dataSubmitted = true;
+        // visually lock the submit button
+        const btn = document.querySelector('.submit-btn');
+        if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; btn.textContent = '✅ Submitted'; }
+        showMessage('✅ Data Saved to Google Sheet Successfully!', 'success');
+    })
+    .catch(err => {
+        showMessage('❌ Network error: ' + err.message, 'error');
+    });
+}
 
 // ── Draft ─────────────────────────────────────────────────────────────────────
 function saveDraft() {
@@ -777,6 +892,10 @@ function handleDraftUpload(event){
 const RAIL_B64 = document.getElementById('railLogo').src;
 
 function generatePDF() {
+    if (!dataSubmitted) {
+        showMessage('⚠️ Please Submit Data First Before Generating PDF!', 'error');
+        return;
+    }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p','mm','a4');
     const pw = doc.internal.pageSize.getWidth();
@@ -952,37 +1071,39 @@ function generatePDF() {
         // CLI 1 box
         doc.setDrawColor(255,255,255); doc.setLineWidth(0.5);
         doc.roundedRect(mL, y, sigBoxW, 34, 2, 2, 'S');
-        // Signature image ABOVE the name
+        doc.setFont(undefined,'bold'); doc.setFontSize(9); doc.setTextColor(26,35,126);
+        doc.text('', mL+3, y+6);
+        doc.setFont(undefined,'normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
+        doc.text('  '+(d.cli1.name||''), mL+3, y+12);
+    
+        doc.text('Date: '+(d.cli1.date||''), mL+3, y+24);
         if(cli1DataUrl){
-            try{ doc.addImage(cli1DataUrl,'PNG', mL+(sigBoxW/2)-20, y+3, 40, 16); }catch(e){}
+            try{ doc.addImage(cli1DataUrl,'PNG', mL+sigBoxW-44, y+14, 40, 16); }catch(e){}
         } else {
             doc.setDrawColor(255,255,255); doc.setLineWidth(0.3);
-            doc.rect(mL+(sigBoxW/2)-20, y+3, 40, 16, 'S');
+            doc.rect(mL+sigBoxW-44, y+14, 40, 16, 'S');
             doc.setFontSize(7); doc.setTextColor(255,255,255);
-            doc.text('', mL+sigBoxW/2, y+12, {align:'center'});
+            doc.text('', mL+sigBoxW-24, y+23, {align:'center'});
         }
-        // CLI name below signature
-        doc.setFont(undefined,'normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
-        doc.text((d.cli1.name||''), mL+(sigBoxW/2), y+23, {align:'center'});
-        doc.text('Date: '+(d.cli1.date||''), mL+(sigBoxW/2), y+30, {align:'center'});
 
         // CLI 2 box
         const cx2 = midX+3;
         doc.setDrawColor(255,255,255); doc.setLineWidth(0.5);
         doc.roundedRect(cx2, y, sigBoxW, 34, 2, 2, 'S');
-        // Signature image ABOVE the name
+        doc.setFont(undefined,'bold'); doc.setFontSize(9); doc.setTextColor(26,35,126);
+        doc.text('', cx2+3, y+6);
+        doc.setFont(undefined,'normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
+        doc.text(' '+(d.cli2.name||''), cx2+3, y+12);
+   
+        doc.text('Date: '+(d.cli2.date||''), cx2+3, y+24);
         if(cli2DataUrl){
-            try{ doc.addImage(cli2DataUrl,'PNG', cx2+(sigBoxW/2)-20, y+3, 40, 16); }catch(e){}
+            try{ doc.addImage(cli2DataUrl,'PNG', cx2+sigBoxW-44, y+14, 40, 16); }catch(e){}
         } else {
             doc.setDrawColor(255,255,255); doc.setLineWidth(0.3);
-            doc.rect(cx2+(sigBoxW/2)-20, y+3, 40, 16, 'S');
+            doc.rect(cx2+sigBoxW-44, y+14, 40, 16, 'S');
             doc.setFontSize(7); doc.setTextColor(255,255,255);
-            doc.text('', cx2+sigBoxW/2, y+12, {align:'center'});
+            doc.text('', cx2+sigBoxW-24, y+23, {align:'center'});
         }
-        // CLI name below signature
-        doc.setFont(undefined,'normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
-        doc.text((d.cli2.name||''), cx2+(sigBoxW/2), y+23, {align:'center'});
-        doc.text('Date: '+(d.cli2.date||''), cx2+(sigBoxW/2), y+30, {align:'center'});
         y+=38;
 
         // Footer on all pages
@@ -1130,6 +1251,82 @@ document.addEventListener('DOMContentLoaded',()=>{
             openZoomInput(e.target);
     },true);
 });
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
 </script>
 <!-- Code injected by live-server -->
 <script>
