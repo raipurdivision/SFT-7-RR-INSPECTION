@@ -5,6 +5,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,13 +90,13 @@
         .info-field.full-width{flex:1 1 100%;}
         .info-field label{display:block;font-weight:bold;margin-bottom:4px;color:#2c3e50;font-size:12px;}
 
-        input[type="text"],input[type="time"],input[type="date"],
+        input[type="text"],input[type="time"],
         input[type="file"],select,textarea{
             width:100%;padding:8px;border:2px solid #b3d9ff;
             border-radius:5px;font-size:12px;font-weight:bold;
             transition:border-color .3s,box-shadow .3s;
         }
-        input[type="text"]:focus,input[type="time"]:focus,input[type="date"]:focus,
+        input[type="text"]:focus,input[type="time"]:focus,
         select:focus,textarea:focus{outline:none;border-color:#4a90e2;box-shadow:0 0 8px rgba(74,144,226,.3);}
         input[type="text"],textarea{text-transform:uppercase;}
 
@@ -209,6 +210,30 @@
             color:#fff;border:none;border-radius:8px;font-size:1.05em;font-weight:bold;cursor:pointer;
         }
 
+        /* ── AUTO-SAVE BAR ── */
+        .autosave-bar{
+            display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+            background:linear-gradient(135deg,#1a237e 0%,#283593 100%);
+            color:#fff;padding:7px 18px;font-size:12px;font-weight:bold;
+            border-bottom:3px solid #FFD700;
+        }
+        .autosave-left{display:flex;align-items:center;gap:8px;}
+        .autosave-dot{
+            width:10px;height:10px;border-radius:50%;background:#bbb;
+            display:inline-block;transition:background .4s;flex-shrink:0;
+        }
+        .autosave-dot.saved{background:#2ecc71;box-shadow:0 0 6px #2ecc71;}
+        .autosave-dot.saving{background:#f39c12;animation:pulse 1s infinite;}
+        .autosave-status{font-size:11px;color:#d0e8ff;}
+        .clear-draft-btn{
+            background:linear-gradient(135deg,#c0392b,#e74c3c);
+            color:#fff;border:none;border-radius:6px;
+            padding:5px 13px;font-size:11px;font-weight:bold;
+            cursor:pointer;letter-spacing:.5px;transition:all .3s;
+            box-shadow:0 2px 6px rgba(0,0,0,.3);
+        }
+        .clear-draft-btn:hover{background:linear-gradient(135deg,#e74c3c,#c0392b);transform:translateY(-1px);}
+
         @media(max-width:768px){
             .header-text h1{font-size:1.2em;}
             .header-inner{flex-direction:column;text-align:center;}
@@ -233,6 +258,16 @@
 </div>
 
 <div class="container">
+
+    <!-- ── AUTO-SAVE BAR ── -->
+    <div class="autosave-bar">
+        <div class="autosave-left">
+            <span class="autosave-dot" id="autosaveDot"></span>
+            <span>AUTO-SAVE</span>
+            <span class="autosave-status" id="autosaveStatus">Not saved yet</span>
+        </div>
+        <button class="clear-draft-btn" onclick="clearAutoSaveDraft()">🗑️ Clear Draft</button>
+    </div>
 
     <!-- ── HEADER ── -->
     <div class="header">
@@ -286,7 +321,7 @@
             <div class="info-fields">
                 <div class="info-field">
                     <label>Date of Inspection:</label>
-                    <input type="date" id="inspDate">
+                    <input type="text" id="inspDate" placeholder="DD/MM/YYYY" maxlength="10" oninput="dateMask(this)">
                 </div>
                 <div class="info-field">
                     <label>Name of Running Room / Station:</label>
@@ -310,7 +345,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="date" id="gi_date" style="min-width:120px;font-size:11px;"></td>
+                            <td><input type="text" id="gi_date" placeholder="DD/MM/YYYY" maxlength="10" oninput="dateMask(this)" style="min-width:120px;font-size:11px;"></td>
                             <td><input type="text" id="gi_room" placeholder="RUNNING ROOM / STATION"></td>
                             <td><input type="text" id="gi_incharge_rly" placeholder="NAME / DESIGNATION"></td>
                             <td><input type="text" id="gi_incharge_agency" placeholder="NAME / DESIGNATION"></td>
@@ -525,14 +560,12 @@
                             <option>GIRDHARI LAL/CLI/R</option><option>JAISHANKAR SHARMA/CLI/BIA</option>
                             <option>JITENDRA KUMAR MISHRA/CLI/BYT</option><option>K P LAHARE/CLI/R</option>
                             <option>K P HIRWANI/CLI/BYT</option><option>K. K. SAHU/CLI/BIA</option>
-                            <option>MAHESHWAR/CLI/BIA</option><option>MAHESHWAR/CLI/BIA</option>
-							   <option>KHUSHAL SINGH/CLI/DRZ/CLI/BIA</option><option>KHUSHAL SINGH/CLI/DRZ/CLI/BIA</option>
+                            <option>KHUSAL SINGH/CLI/DRZ</option><option>MAHESHWAR/CLI/BIA</option>
                             <option>MANOJ KUMAR SAO/CLI/R</option><option>MANSUKH LAL CHANDRAKAR/CLI/R</option>
                             <option>MOHIT KUMAR SWARNKAR/CLI/BIA</option><option>N. R. KARPAL/CLI/BIA</option>
                             <option>N.K. BHOI/CLI/R</option><option>NITIN KUKDE/CLI/BYT</option>
                             <option>NIRMAL KUMAR/CLI/BYT</option><option>P.K. PATEL/CLI/BIA</option>
                             <option>PANKAJ KUMAR SINGH/CLI/BIA</option><option>PAWAN KUMAR SINGH/CLI/BIA</option>
-							  <option>PURAN LAL PATEL/CLI/BYT</option><option>PURAN LAL PATEL/CLI/BYT</option>
                             <option>PALAK RAM ALENDRA/CLI/DRZ</option><option>RAJENDRA KUMAR/CLI/BIA</option>
                             <option>RAJESH KUMAR DESHMUKH/CLI/R</option><option>RAJNEESH BENERJEE/CLI/BIA</option>
                             <option>RANJEET SINGH/CLI/BYT</option><option>RAKESH KUMAR KOSTA/CLI/DRZ</option>
@@ -543,11 +576,9 @@
                             <option>SANTOSH KUAMAR PATKAR/CLI/BIA</option><option>SHAILENDRA SINGH/CLI/BIA</option>
                             <option>SUNDEEP KUMAR SHARMA/CLI/BIA</option><option>SUNIL KUMAR DEWANGAN/CLI/BIA</option>
                             <option>SANAT KUMAR SAHU/CLI/DRZ</option><option>V.K. BHAGAT/CLI/R</option>
-                            <option>VIJAY KUMAR ARYA/CLI/BIA</option><option>VIJAY KUMAR ARYA/CLI/BIA</option>
-							    <option>VIKAS SHENDE/CLI/R</option><option>VIKAS SHENDE/CLI/R</option>
+                            <option>VIJAY KUMAR ARYA/CLI/BIA</option><option>VIKAS SHENDE/CLI/BIA</option>
                             <option>VINAY KUMAR VINCHURE/CLI/BIA</option><option>VINAY PANTAWANE/CLI/BIA</option>
-                            <option>Y. RAMU/CLI/BIA</option><option>Y RAMU/CLI/BIA</option>
-							           <option>Y K MIHAULIA/CLI/BIA</option><option>Y K MIHAULIA/CLI/BIA</option>
+                            <option>Y. RAMU/CLI/BIA</option><option>YOGESH KUMAR MIHAULIA/CLI/BIA</option>
                             <option>OTHERS</option>
                         </select>
                         <input type="text" id="cli1NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
@@ -555,7 +586,7 @@
                     
                     <div class="info-field" style="margin-top:8px;">
                         <label>Date:</label>
-                        <input type="date" id="cli1Date">
+                        <input type="text" id="cli1Date" placeholder="DD/MM/YYYY" maxlength="10" oninput="dateMask(this)">
                     </div>
                     <div class="info-field" style="margin-top:8px;text-align:center;">
                         <label>Upload Signature:</label>
@@ -587,15 +618,13 @@
                             <option>GIRDHARI LAL/CLI/R</option><option>JAISHANKAR SHARMA/CLI/BIA</option>
                             <option>JITENDRA KUMAR MISHRA/CLI/BYT</option><option>K P LAHARE/CLI/R</option>
                             <option>K P HIRWANI/CLI/BYT</option><option>K. K. SAHU/CLI/BIA</option>
-                            <option>KHUSHAL SINGH/CLI/DRZ</option><option>KHUSHAL SINGH/CLI/DRZ</option>
-							   <option>MAHESHWAR/CLI/BIA</option><option>MAHESJWAR/CLI/BIA</option>
+                            <option>KHUSAL SINGH/CLI/DRZ</option><option>MAHESHWAR/CLI/BIA</option>
                             <option>MANOJ KUMAR SAO/CLI/R</option><option>MANSUKH LAL CHANDRAKAR/CLI/R</option>
                             <option>MOHIT KUMAR SWARNKAR/CLI/BIA</option><option>N. R. KARPAL/CLI/BIA</option>
                             <option>N.K. BHOI/CLI/R</option><option>NITIN KUKDE/CLI/BYT</option>
                             <option>NIRMAL KUMAR/CLI/BYT</option><option>P.K. PATEL/CLI/BIA</option>
                             <option>PANKAJ KUMAR SINGH/CLI/BIA</option><option>PAWAN KUMAR SINGH/CLI/BIA</option>
                             <option>PALAK RAM ALENDRA/CLI/DRZ</option><option>RAJENDRA KUMAR/CLI/BIA</option>
-							   <option>PURAN LAL PATEL/CLI/BYT</option><option>PURAN LAL PATEL/CLI/BYT</option>
                             <option>RAJESH KUMAR DESHMUKH/CLI/R</option><option>RAJNEESH BENERJEE/CLI/BIA</option>
                             <option>RANJEET SINGH/CLI/BYT</option><option>RAKESH KUMAR KOSTA/CLI/DRZ</option>
                             <option>S K GAUTAM/CLI/BIA</option><option>S S HUSSAIN/CLI/BIA</option>
@@ -605,8 +634,7 @@
                             <option>SANTOSH KUAMAR PATKAR/CLI/BIA</option><option>SHAILENDRA SINGH/CLI/BIA</option>
                             <option>SUNDEEP KUMAR SHARMA/CLI/BIA</option><option>SUNIL KUMAR DEWANGAN/CLI/BIA</option>
                             <option>SANAT KUMAR SAHU/CLI/DRZ</option><option>V.K. BHAGAT/CLI/R</option>
-                            <option>VIJAY KUMAR ARYA/CLI/BIA</option><option>VIJAY KUMAR ARYA/CLI/BIA</option>
-							    <option>VIKAS SHENDE/CLI/R</option><option>VIKAS SHENDE/CLI/R</option>
+                            <option>VIJAY KUMAR ARYA/CLI/BIA</option><option>VIKAS SHENDE/CLI/BIA</option>
                             <option>VINAY KUMAR VINCHURE/CLI/BIA</option><option>VINAY PANTAWANE/CLI/BIA</option>
                             <option>Y. RAMU/CLI/BIA</option><option>YOGESH KUMAR MIHAULIA/CLI/BIA</option>
                             <option>OTHERS</option>
@@ -616,7 +644,7 @@
                    
                     <div class="info-field" style="margin-top:6px;">
                         <label>Date:</label>
-                        <input type="date" id="cli2Date">
+                        <input type="text" id="cli2Date" placeholder="DD/MM/YYYY" maxlength="10" oninput="dateMask(this)">
                     </div>
                     <div class="info-field" style="margin-top:8px;text-align:center;">
                         <label>Upload Signature:</label>
@@ -1234,12 +1262,127 @@ function closeZoomInput(){
     document.getElementById('zoomOverlay').classList.remove('active');
     document.getElementById('zoomInput').value='';
     originalInputElement=null;
+    scheduleAutoSave(); // save after zoom input
 }
 function toggleMobileView(){
     const on=document.getElementById('mobileToggle').checked;
     document.body.classList.toggle('mobile-view',on);
     showMessage('Mobile view '+(on?'enabled':'disabled')+'!','success');
 }
+
+// ── Date Helpers (dd/mm/yyyy) ─────────────────────────────────────────────────
+function todayDMY() {
+    const t = new Date();
+    const d = String(t.getDate()).padStart(2,'0');
+    const m = String(t.getMonth()+1).padStart(2,'0');
+    const y = t.getFullYear();
+    return d+'/'+m+'/'+y;
+}
+
+function dateMask(el) {
+    // Remove non-digits
+    let v = el.value.replace(/\D/g,'');
+    // Auto-insert slashes: DD/MM/YYYY
+    if (v.length > 2) v = v.slice(0,2)+'/'+v.slice(2);
+    if (v.length > 5) v = v.slice(0,5)+'/'+v.slice(5,9);
+    el.value = v;
+}
+
+// ── AUTO-SAVE (localStorage) ─────────────────────────────────────────────────
+const AUTOSAVE_KEY = 'SFT7_autosave_draft';
+let autosaveTimer = null;
+
+function setAutosaveStatus(state, text) {
+    const dot = document.getElementById('autosaveDot');
+    const status = document.getElementById('autosaveStatus');
+    if (!dot || !status) return;
+    dot.className = 'autosave-dot ' + (state || '');
+    status.textContent = text;
+}
+
+function autoSaveNow() {
+    try {
+        const data = collectData();
+        const payload = { data, savedAt: new Date().toISOString() };
+        localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(payload));
+        const t = new Date();
+        const timeStr = t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        setAutosaveStatus('saved', 'Saved at ' + timeStr);
+    } catch(e) {
+        setAutosaveStatus('', 'Save failed!');
+    }
+}
+
+function scheduleAutoSave() {
+    setAutosaveStatus('saving', 'Saving…');
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(autoSaveNow, 800); // debounce: save 0.8s after last keystroke
+}
+
+function restoreAutoSaveDraft() {
+    try {
+        const raw = localStorage.getItem(AUTOSAVE_KEY);
+        if (!raw) return false;
+        const payload = JSON.parse(raw);
+        const d = payload.data;
+        if (!d) return false;
+
+        function sv(id, val) { const el = document.getElementById(id); if (el) el.value = val || ''; }
+        sv('inspOfficialName', d.inspOfficialName); sv('inspDesignation', d.inspDesignation);
+        sv('inspDate', d.inspDate); sv('runningRoom', d.runningRoom);
+        if (d.gi) { sv('gi_date', d.gi.date); sv('gi_room', d.gi.room); sv('gi_incharge_rly', d.gi.rly); sv('gi_incharge_agency', d.gi.agency); }
+        function restoreSection(prefix, arr) {
+            if (!arr) return;
+            arr.forEach((item, i) => { sv(prefix + '_q' + (i + 1), item.q); sv(prefix + '_r' + (i + 1), item.r); });
+        }
+        restoreSection('rec', d.reception); restoreSection('rooms', d.rooms);
+        restoreSection('toilets', d.toilets); restoreSection('kitchen', d.kitchen);
+        restoreSection('other', d.otherObs); restoreSection('sg', d.grievance);
+        sv('otherRemarks', d.otherRemarks);
+        if (d.cli1) { sv('cli1Name', d.cli1.name); sv('cli1Place', d.cli1.place); sv('cli1Date', d.cli1.date); }
+        if (d.cli2) { sv('cli2Name', d.cli2.name); sv('cli2Place', d.cli2.place); sv('cli2Date', d.cli2.date); }
+
+        const savedAt = payload.savedAt ? new Date(payload.savedAt).toLocaleString('en-IN') : '';
+        setAutosaveStatus('saved', 'Draft restored — ' + savedAt);
+        showMessage('✅ Auto-saved draft restored from: ' + savedAt, 'success');
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+function clearAutoSaveDraft() {
+    if (!confirm('🗑️ Are you sure you want to DELETE the saved draft?\n\nAll auto-saved data will be permanently removed.')) return;
+    localStorage.removeItem(AUTOSAVE_KEY);
+
+    // Clear all text inputs, textareas, selects
+    document.querySelectorAll('input[type="text"], textarea').forEach(el => { el.value = ''; });
+    document.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
+
+    // Reset dates to today
+    const today = todayDMY();
+    document.getElementById('inspDate').value = today;
+    document.getElementById('gi_date').value = today;
+    document.getElementById('cli1Date').value = today;
+    document.getElementById('cli2Date').value = today;
+
+    setAutosaveStatus('', 'Draft cleared');
+    showMessage('🗑️ Draft cleared — all fields have been reset.', 'success');
+}
+
+function attachAutoSaveListeners() {
+    // Listen on all current + dynamically added inputs
+    document.querySelectorAll('input[type="text"], input[type="time"], select, textarea').forEach(el => {
+        el.addEventListener('input', scheduleAutoSave);
+        el.addEventListener('change', scheduleAutoSave);
+    });
+}
+
+// Also save immediately on page unload (power off / tab close)
+window.addEventListener('beforeunload', () => {
+    clearTimeout(autosaveTimer);
+    autoSaveNow();
+});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
@@ -1248,168 +1391,25 @@ document.addEventListener('DOMContentLoaded',()=>{
     buildChecklist(KITCHEN_ITEMS,'kitchenBody','kitchen');
     buildChecklist(OTHER_OBS_ITEMS,'otherObsBody','other');
 
-    document.getElementById('inspDate').value=new Date().toISOString().split('T')[0];
-    document.getElementById('gi_date').value=new Date().toISOString().split('T')[0];
-    document.getElementById('cli1Date').value=new Date().toISOString().split('T')[0];
-    document.getElementById('cli2Date').value=new Date().toISOString().split('T')[0];
+    // Try to restore auto-saved draft first; if none, set today's dates
+    const restored = restoreAutoSaveDraft();
+    if (!restored) {
+        const today = todayDMY();
+        document.getElementById('inspDate').value = today;
+        document.getElementById('gi_date').value = today;
+        document.getElementById('cli1Date').value = today;
+        document.getElementById('cli2Date').value = today;
+        setAutosaveStatus('', 'No saved draft');
+    }
+
+    // Attach auto-save listeners to all fields (including dynamically built checklist rows)
+    attachAutoSaveListeners();
 
     document.addEventListener('focus',e=>{
         if(e.target.matches('input[type="text"],textarea')&&document.body.classList.contains('mobile-view'))
             openZoomInput(e.target);
     },true);
 });
-</script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
 </script>
 </body>
 </html>
