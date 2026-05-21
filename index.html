@@ -6,6 +6,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -949,7 +950,7 @@ function generatePDF() {
     doc.line(0,36,pw,36);
 
     // Logo
-    try{ doc.addImage(RAIL_B64,'PNG',mL,7,20,20); }catch(e){}
+    try{ doc.addImage(RAIL_B64,'PNG',mL,8,16,16); }catch(e){}
 
     doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
     doc.setFontSize(15);
@@ -977,12 +978,12 @@ function generatePDF() {
     doc.setFont(undefined,'bold'); doc.setFontSize(9); doc.setTextColor(0,0,0);
     const lx=mL+3, rx=pw/2+3;
     function row2(l1,v1,l2,v2){
-        checkPage(6);
+        checkPage(8);
         doc.setFont(undefined,'bold'); doc.setTextColor(60,60,60); doc.text(l1,lx,y);
         doc.setFont(undefined,'normal'); doc.setTextColor(0,0,0); doc.text(v1||'',lx+38,y);
         if(l2){doc.setFont(undefined,'bold'); doc.setTextColor(60,60,60); doc.text(l2,rx,y);
         doc.setFont(undefined,'normal'); doc.setTextColor(0,0,0); doc.text(v2||'',rx+32,y);}
-        y+=3;
+        y+=8;
     }
     row2('Name of Official:',d.inspOfficialName,'Designation:',d.inspDesignation);
     row2('Date of Inspection:',d.inspDate,'Running Room:',d.runningRoom);
@@ -1105,41 +1106,38 @@ function generatePDF() {
 
         // CLI 1 box
         doc.setDrawColor(255,255,255); doc.setLineWidth(0.5);
-        doc.roundedRect(mL, y, sigBoxW, 34, 2, 2, 'S');
-        doc.setFont(undefined,'bold'); doc.setFontSize(9); doc.setTextColor(26,35,126);
-        doc.text('', mL+3, y+6);
-        doc.setFont(undefined,'normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
-        doc.text('  '+(d.cli1.name||''), mL+3, y+12);
-    
-        doc.text('Date: '+(d.cli1.date||''), mL+3, y+24);
+        doc.roundedRect(mL, y, sigBoxW, 38, 2, 2, 'S');
+        // Signature image at top
         if(cli1DataUrl){
-            try{ doc.addImage(cli1DataUrl,'PNG', mL+sigBoxW-44, y+14, 40, 16); }catch(e){}
+            try{ doc.addImage(cli1DataUrl,'PNG', mL+(sigBoxW-40)/2, y+3, 40, 16); }catch(e){}
         } else {
             doc.setDrawColor(255,255,255); doc.setLineWidth(0.3);
-            doc.rect(mL+sigBoxW-44, y+14, 40, 16, 'S');
-            doc.setFontSize(7); doc.setTextColor(255,255,255);
-            doc.text('', mL+sigBoxW-24, y+23, {align:'center'});
+            doc.rect(mL+(sigBoxW-40)/2, y+3, 40, 16, 'S');
         }
+        // CLI name below signature
+        doc.setFont(undefined,'normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
+        doc.text((d.cli1.name||''), mL + sigBoxW/2, y+24, {align:'center'});
+        // Date at bottom
+        doc.text('Date: '+(d.cli1.date||''), mL + sigBoxW/2, y+32, {align:'center'});
 
         // CLI 2 box
         const cx2 = midX+3;
         doc.setDrawColor(255,255,255); doc.setLineWidth(0.5);
-        doc.roundedRect(cx2, y, sigBoxW, 34, 2, 2, 'S');
-        doc.setFont(undefined,'bold'); doc.setFontSize(9); doc.setTextColor(26,35,126);
-        doc.text('', cx2+3, y+6);
-        doc.setFont(undefined,'normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
-        doc.text(' '+(d.cli2.name||''), cx2+3, y+12);
-   
-        doc.text('Date: '+(d.cli2.date||''), cx2+3, y+24);
+        doc.roundedRect(cx2, y, sigBoxW, 38, 2, 2, 'S');
+        // Signature image at top
         if(cli2DataUrl){
-            try{ doc.addImage(cli2DataUrl,'PNG', cx2+sigBoxW-44, y+14, 40, 16); }catch(e){}
+            try{ doc.addImage(cli2DataUrl,'PNG', cx2+(sigBoxW-40)/2, y+3, 40, 16); }catch(e){}
         } else {
             doc.setDrawColor(255,255,255); doc.setLineWidth(0.3);
-            doc.rect(cx2+sigBoxW-44, y+14, 40, 16, 'S');
-            doc.setFontSize(7); doc.setTextColor(255,255,255);
-            doc.text('', cx2+sigBoxW-24, y+23, {align:'center'});
+            doc.rect(cx2+(sigBoxW-40)/2, y+3, 40, 16, 'S');
         }
-        y+=38;
+        // CLI name below signature
+        doc.setFont(undefined,'normal'); doc.setFontSize(8.5); doc.setTextColor(0,0,0);
+        doc.text((d.cli2.name||''), cx2 + sigBoxW/2, y+24, {align:'center'});
+        // Date at bottom
+        doc.text('Date: '+(d.cli2.date||''), cx2 + sigBoxW/2, y+32, {align:'center'});
+
+        y+=42;
 
         // Footer on all pages
         const totalPages = doc.internal.getNumberOfPages();
