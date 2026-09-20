@@ -171,14 +171,6 @@
             cursor:pointer;transition:all .3s;text-transform:uppercase;letter-spacing:1px;
             box-shadow:0 4px 10px rgba(0,0,0,.2);
         }
-        .submit-btn{background:linear-gradient(135deg,#3498db,#2980b9);color:#fff;}
-        .submit-btn:hover{background:linear-gradient(135deg,#2980b9,#21618c);transform:translateY(-2px);}
-        .pdf-btn{background:linear-gradient(135deg,#e67e22,#d35400);color:#fff;}
-        .pdf-btn:hover{background:linear-gradient(135deg,#d35400,#ba4a00);transform:translateY(-2px);}
-        .save-draft-btn{background:linear-gradient(135deg,#9b59b6,#8e44ad);color:#fff;}
-        .save-draft-btn:hover{background:linear-gradient(135deg,#8e44ad,#7d3c98);transform:translateY(-2px);}
-        .upload-draft-btn{background:linear-gradient(135deg,#16a085,#138d75);color:#fff;}
-        .upload-draft-btn:hover{background:linear-gradient(135deg,#138d75,#117a65);transform:translateY(-2px);}
 
         .message{
             display:none;margin-top:16px;padding:14px;border-radius:8px;
@@ -186,6 +178,31 @@
         }
         .message.success{background:#d4edda;color:#155724;border:2px solid #c3e6cb;}
         .message.error{background:#f8d7da;color:#721c24;border:2px solid #f5c6cb;}
+
+        /* ── SUBMIT SAVING ANIMATION ── */
+        .saving-panel{
+            display:none;flex-direction:column;align-items:center;text-align:center;
+            margin-top:18px;padding:18px 10px 8px;
+        }
+        .saving-panel.active{display:flex;}
+        .saving-ring-wrap{position:relative;width:90px;height:90px;}
+        .saving-ring{
+            position:absolute;inset:0;border-radius:50%;
+            border:8px solid #dcf3e2;border-top-color:#16a34a;border-left-color:#16a34a;
+            box-sizing:border-box;animation:savingSpin 1s linear infinite;
+        }
+        .saving-hand{
+            position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+            font-size:38px;line-height:1;
+        }
+        .saving-hand span{display:inline-block;animation:savingWave 1s ease-in-out infinite;}
+        .saving-title{margin-top:16px;font-size:1.35em;font-weight:bold;color:#16a34a;letter-spacing:.5px;}
+        .saving-sub{margin-top:6px;font-size:1em;font-weight:bold;color:#15803d;}
+        @keyframes savingSpin{to{transform:rotate(360deg);}}
+        @keyframes savingWave{
+            0%,100%{transform:rotate(-14deg);}
+            50%{transform:rotate(14deg);}
+        }
 
         /* ── ZOOM OVERLAY ── */
         .zoom-overlay{
@@ -241,6 +258,47 @@
             .header-controls{align-items:center;}
             .button-group{flex-direction:column;}
             button{width:100%;}
+        }
+
+        /* ── 3D BLACK ACTION BUTTONS (bottom button row) ── */
+        .button-group{gap:12px;margin-bottom:8px;}
+        .button-group button{
+            --c:#3498db; --d:#1f5f8b;              /* text colour / 3D edge colour */
+            padding:7px 14px;font-size:.75em;letter-spacing:.6px;border-radius:7px;
+            color:var(--c);text-shadow:0 1px 2px rgba(0,0,0,.9);
+            background:linear-gradient(180deg,#4d4d4d 0%,#1e1e1e 14%,#000 60%,#101010 100%);
+            border:1px solid #000;position:relative;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.35),
+                inset 0 -2px 3px rgba(255,255,255,.08),
+                0 4px 0 var(--d),
+                0 8px 10px rgba(0,0,0,.45);
+            transition:transform .12s ease, box-shadow .12s ease, filter .2s ease;
+        }
+        .button-group button:hover{
+            transform:translateY(-1px);filter:brightness(1.3);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.4),
+                inset 0 -2px 3px rgba(255,255,255,.08),
+                0 5px 0 var(--d),
+                0 10px 12px rgba(0,0,0,.45);
+        }
+        .button-group button:active,
+        .button-group button:disabled{
+            transform:translateY(4px);filter:none;
+            box-shadow:
+                inset 0 2px 4px rgba(0,0,0,.8),
+                0 0 0 var(--d),
+                0 2px 3px rgba(0,0,0,.4);
+        }
+        .button-group .save-draft-btn  {--c:#c07bf0;--d:#6c3483;}
+        .button-group .upload-draft-btn{--c:#2ee6c1;--d:#0e6655;}
+        .button-group .submit-btn      {--c:#5dade2;--d:#1f5f8b;}
+        .button-group .pdf-btn         {--c:#f5a04a;--d:#935116;}
+        .button-group .reset-btn       {--c:#ff6b5e;--d:#922b21;}
+        @media(max-width:768px){
+            .button-group{flex-direction:row;}
+            .button-group button{width:auto;flex:1 1 44%;}
         }
     </style>
 </head>
@@ -546,43 +604,97 @@
                     <div class="info-field">
                         <label>1.CLI Name &amp; HQ:</label>
                         <select id="cli1Name" onchange="toggleOtherInput('cli1Name','cli1NameOther')">
-                            <option value="">Select CLI Name and HQ</option>
-                            <option>A K REDDY/CLI/BIA</option><option>A.R.TARAM/CLI/BIA</option>
-                            <option>ABDUL MOIN KHAN/CLI/BIA</option><option>AKHILESH KUMAR/CLI/BIA</option>
-                            <option>AMIT KUMAR BANKURE/CLI/BYT</option><option>ANANT PRAKASH SHRIVASTAVA/CLI/BIA</option>
-                            <option>ANIL KUMAR/CLI/BIA</option><option>ANKIT RAM KANT/CLI/BIA</option>
-                            <option>AVON KUMAR SAHU/CLI/R</option><option>ASHISH WANJARI/CLI/BYT</option>
-                            <option>B B KUSHWAHA/CLI/BIA</option><option>B K HARMUKH/CLI/BIA</option>
-                            <option>B. K. SAHA/CLI/BIA</option><option>B.K.SONI/CLI/BIA</option>
-                            <option>BHARAT SINGH ATBHAIYYA/CLI/R</option><option>BHOLI CHAUDHARY/CLI/R</option>
-                            <option>BIKRAMJIT KANRAR/CLI/BIA</option><option>BINOD KUMAR RAM/CLI/R</option>
-                            <option>DEEPANNITA PUNTAMBEKAR/CLI/BIA</option><option>DILLI RAO/CLI/BYT</option>
-                            <option>G. C. BISWAS/CLI/R</option><option>G. V. R. K. MADHU/CLI/BIA</option>
-                            <option>GIRDHARI LAL/CLI/R</option><option>JAISHANKAR SHARMA/CLI/BIA</option>
-                            <option>JITENDRA KUMAR MISHRA/CLI/BYT</option><option>K P LAHARE/CLI/R</option>
-                            <option>K P HIRWANI/CLI/BYT</option><option>K. K. SAHU/CLI/BIA</option>
-                            <option>KHUSHAL SINGH/CLI/DRZ</option><option>MAHESHWAR/CLI/BIA</option>
-                            <option>KAMLESH KUMAR RAJABHOJ/CLI/BIA</option><option>KAMLESH KUMAR RAJABHOJ/CLI/BIA</option>
-                            <option>MANOJ KUMAR SAO/CLI/BIA</option><option>MANSUKH LAL CHANDRAKAR/CLI/R</option>
-                            <option>MOHIT KUMAR SWARNKAR/CLI/BIA</option><option>N. R. KARPAL/CLI/BIA</option>
-                            <option>N.K. BHOI/CLI/R</option><option>NITIN KUKDE/CLI/BYT</option>
-                            <option>NIRMAL KUMAR/CLI/BYT</option><option>P.K. PATEL/CLI/BIA</option>
-                            <option>PANKAJ KUMAR SINGH/CLI/BIA</option><option>PAWAN KUMAR SINGH/CLI/BIA</option>
-                            <option>PALAK RAM ALENDRA/CLI/DRZ</option><option>RAJENDRA KUMAR/CLI/BIA</option>
-                            <option>RAJESH KUMAR DESHMUKH/CLI/R</option><option>RAJNEESH BENERJEE/CLI/BIA</option>
-                            <option>RANJEET SINGH/CLI/BYT</option><option>RAKESH KUMAR KOSTA/CLI/DRZ</option>
-                            <option>S K GAUTAM/CLI/BIA</option><option>S S HUSSAIN/CLI/BIA</option>
-                            <option>S. C. RAI/CLI/BIA</option><option>S. K. SINGH/CLI/BIA</option>
-                            <option>S. L. SONI/CLI/R</option><option>SANJAY KUMAR ROY/CLI/BIA</option>
-                            <option>SANJAY SINGH/CLI/BYT</option><option>SANJEEV KUMAR SHARMA/CLI/BIA</option>
-                            <option>SANTOSH KUAMAR PATKAR/CLI/BIA</option><option>SHAILENDRA SINGH/CLI/BIA</option>
-                            <option>SUNDEEP KUMAR SHARMA/CLI/BIA</option><option>SUNIL KUMAR DEWANGAN/CLI/BIA</option>
-                            <option>SANAT KUMAR SAHU/CLI/DRZ</option><option>V.K. BHAGAT/CLI/R</option>
-                            <option>VIKAS SHENDE/CLI/BIA</option><option>VIKAS SHENDE/CLI/R</option>
-                              <option>VIJAY KUMAR ARYA/CLI/BIA</option><option>VIJAY KUMAR ARYA/CLI/BIA</option>
-                            <option>VINAY KUMAR VINCHURE/CLI/BIA</option><option>VINAY PANTAWANE/CLI/BIA</option>
-                            <option>Y. RAMU/CLI/BIA</option><option>YOGESH KUMAR MIHAULIA/CLI/BIA</option>
-                            <option>OTHERS</option>
+                                <option value="">Select CLI Name and HQ</option>
+                                <option value="A K REDDY/CLI/R">A K REDDY/CLI/R</option>
+                                <option value="A.R.TARAM/CLI/BIA">A.R. TARAM/CLI/BIA</option>
+                                <option value="ABDUL MOIN KHAN/CLI/BIA">ABDUL MOIN KHAN/CLI/BIA</option>
+                                <option value="AKHILESH KUMAR/CLI/BIA">AKHILESH KUMAR/CLI/BIA</option>
+                                <option value="AMIT KUMAR BANKURE/CLI/BIA">AMIT KUMAR BANKURE/CLI/BIA</option>
+                                <option value="ANANT PRAKASH SHRIVASTAVA/CLI/BIA">ANANT PRAKASH SHRIVASTAVA/CLI/BIA</option>
+                                <option value="ANIL KUMAR/CLI/BIA">ANIL KUMAR/CLI/BIA</option>
+                                <option value="ANKIT RAM KANT/CLI/BIA">ANKIT RAM KANT/CLI/BIA</option>
+                                <option value="AVON KUMAR SAHU/CLI/R">AVON KUMAR SAHU/CLI/R</option>
+                                <option value="ASHISH WANJARI/CLI/BIA">ASHISH WANJARI/CLI/BIA</option>
+                                <option value="B B KUSHWAHA/CLI/BIA">B B KUSHWAHA/CLI/BIA</option>
+                                <option value="B K HARMUKH/CLI/BIA">B K HARMUKH/CLI/BIA</option>
+                                <option value="B. K. SAHA/CLI/BIA">B. K. SAHA/CLI/BIA</option>
+                                <option value="B.K.SONI/CLI/BIA">B.K.SONI/CLI/BIA</option>
+                                <option value="BHARAT SINGH ATBHAIYYA/CLI/R">BHARAT SINGH ATBHAIYYA/CLI/R</option>
+                                <option value="BHOLI CHAUDHARY/CLI/R">BHOLI CHAUDHARY/CLI/R</option>
+                                <option value="BIKRAMJIT KANRAR/CLI/BIA">BIKRAMJIT KANRAR/CLI/BIA</option>
+                                <option value="BINOD KUMAR RAM/CLI/R">BINOD KUMAR RAM/CLI/R</option>
+                                <option value="CLI NAME/CLI/BIA">CLI NAME/CLI/BIA</option>
+                                <option value="DEEPANNITA PUNTAMBEKAR/CLI/BIA">DEEPANNITA PUNTAMBEKAR/CLI/BIA</option>
+                                <option value="DILLI RAO/CLI/BIA">DILLI RAO/CLI/BIA</option>
+                                <option value="G. C. BISWAS/CLI/R">G. C. BISWAS/CLI/R</option>
+                                <option value="G. V. R. K. MADHU/CLI/BIA">G. V. R. K. MADHU/CLI/BIA</option>
+                                <option value="GIRDHARI LAL/CLI/R">GIRDHARI LAL/CLI/R</option>
+                                <option value="JAISHANKAR SHARMA/CLI/BIA">JAISHANKAR SHARMA/CLI/BIA</option>
+                                <option value="JITENDRA KUMAR MISHRA/CLI/BIA">JITENDRA KUMAR MISHRA/CLI/BIA</option>
+                                <option value="K P LAHARE/CLI/R">K P LAHRE/CLI/BIA</option>
+                                <option value="K P HIRWANI/CLI/BIA">K P HIRWANI/CLI/BIA</option>
+                                <option value="K. K. SAHU/CLI/BIA">K. K. SAHU/CLI/BIA</option>
+                                <option value="KHUSHAL SINGH/CLI/DRZ">KHUSHAL SINGH/CLI/DRZ</option>
+                                <option value="KAMLESH KUMAR RAJABHOJ/CLI/BIA">KAMLESH KUMAR RAJABHOJ/CLI/BIA</option>
+                                <option value="MAHESHWAR/CLI/BIA">MAHESHWAR/CLI/BIA</option>
+                                <option value="MANOJ KUMAR SAO/CLI/BIA">MANOJ KUMAR SAO/CLI/BIA</option>
+                                <option value="MANSUKH LAL CHANDRAKAR/CLI/R">MANSUKH LAL CHANDRAKAR/CLI/R</option>
+                                <option value="MOHIT KUMAR SWARNKAR/CLI/BIA">MOHIT KUMAR SWARNKAR/CLI/BIA</option>
+                                <option value="N. R. KARPAL/CLI/BIA">N. R. KARPAL/CLI/BIA</option>
+                                <option value="N.K. BHOI/CLI/R">N.K. BHOI/CLI/R</option>
+                                <option value="NITIN KUKDE/CLI/BIA">NITIN KUKDE/CLI/BIA</option>
+                                <option value="NIRMAL KUMAR/CLI/BIA">NIRMAL KUMAR/CLI/BIA</option>
+                                <option value="P.K. PATEL/CLI/BIA">P.K. PATEL/CLI/BIA</option>
+                                <option value="PANKAJ KUMAR SINGH/CLI/BIA">PANKAJ KUMAR SINGH/CLI/BIA</option>
+                                <option value="PAWAN KUMAR SINGH/CLI/BIA">PAWAN KUMAR SINGH/CLI/BIA</option>
+                                <option value="PURAN LAL PATEL/CLI/BIA">PURAN LAL PATEL/CLI/BIA</option>
+                                <option value="RAJENDRA KUMAR/CLI/BIA">RAJENDRA KUMAR/CLI/BIA</option>
+                                <option value="RAJENDRA SINGH/CLI/BIA">RAJENDRA SINGH/CLI/BIA</option>
+                                <option value="PALAK RAM ALENDRA/CLI/DRZ">PALAK RAM ALENDRA/CLI/DRZ</option>
+                                <option value="RAJESH KUMAR DESHMUKH/CLI/R">RAJESH KUMAR DESHMUKH/CLI/R</option>
+                                <option value="RAJNEESH BENERJEE/CLI/BIA">RAJNEESH BENERJEE/CLI/BIA</option>
+                                <option value="RANJEET SINGH/CLI/BIA">RANJEET SINGH/CLI/BIA</option>
+                                <option value="RAKESH KUMAR KOSTA/CLI/DRZ">RAKESH KUMAR KOSTA/CLI/DRZ</option>
+                                <option value="S K GAUTAM/CLI/BIA">S K GAUTAM/CLI/BIA</option>
+                                <option value="S S HUSSAIN/CLI/BIA">S S HUSSAIN/CLI/BIA</option>
+                                <option value="S. C. RAI/CLI/BIA">S. C. RAI/CLI/BIA</option>
+                                <option value="S. K. SINGH/CLI/BIA">S. K. SINGH/CLI/BIA</option>
+                                <option value="S. L. SONI/CLI/R">S. L. SONI/CLI/R</option>
+                                <option value="SANJAY KUMAR ROY/CLI/BIA">SANJAY KUMAR ROY/CLI/BIA</option>
+                                <option value="SANJAY SINGH/CLI/DRZ">SANJAY SINGH/CLI/DRZ</option>
+                                <option value="SANJEEV KUMAR SHARMA/CLI/BIA">SANJEEV KUMAR SHARMA/CLI/BIA</option>
+                                <option value="SANTOSH KUAMAR PATKAR/CLI/BIA">SANTOSH KUAMAR PATKAR/CLI/BIA</option>
+                                <option value="SHAILENDRA SINGH/CLI/BIA">SHAILENDRA SINGH/CLI/BIA</option>
+                                <option value="SUNDEEP KUMAR SHARMA/CLI/BIA">SUNDEEP KUMAR SHARMA/CLI/BIA</option>
+                                <option value="SUNIL KUMAR DEWANGAN/CLI/BIA">SUNIL KUMAR DEWANGAN/CLI/BIA</option>
+                                <option value="SURENDRA KUMAR SONI/CLI/BYT">SURENDRA KUMAR SONI/CLI/BYT</option>
+                                <option value="SATYENDRA KUMAR/CLI/DRZ">SATYENDRA KUMAR/CLI/DRZ</option>
+                                <option value="SANAT KUMAR SAHU/CLI/DRZ">SANAT KUMAR SAHU/CLI/DRZ</option>
+                                <option value="TEST ID/CLI/BIA">TEST ID/CLI/BIA</option>
+                                <option value="V.K. BHAGAT/CLI/R">V.K. BHAGAT/CLI/R</option>
+                                <option value="VIJAY KUMAR ARYA/CLI/BIA">VIJAY KUMAR ARYA/CLI/BIA</option>
+                                <option value="VIKAS SHENDE/CLI/R">VIKAS SHENDE/CLI/R</option>
+                                <option value="VINAY KUMAR VINCHURE/CLI/BIA">VINAY KUMAR VINCHURE/CLI/BIA</option>
+                                <option value="VINAY PANTAWANE/CLI/BIA">VINAY PANTAWANE/CLI/BIA</option>
+                                <option value="Y. RAMU/CLI/BIA">Y. RAMU/CLI/BIA</option>
+                                <option value="YOGESH KUMAR MIHAULIA/CLI/BIA">YOGESH KUMAR MIHAULIA/CLI/BIA</option>
+                                <option value="GHANA RAM SAHU/CLI/BIA">GHANA RAM SAHU/CLI/BIA</option>
+                                <option value="HARESH SHRAWAN/CLI/BIA">HARESH SHRAWAN/CLI/BIA</option>
+                                <option value="RAJPUT MUKESH KUMAR/CLI/BIA">RAJPUT MUKESH KUMAR/CLI/BIA</option>
+                                <option value="NEELKANTH DEWANGAN/CLI/BIA">NEELKANTH DEWANGAN/CLI/BIA</option>
+                                <option value="GIRISH KUMAR VERMA/CLI/BYT">GIRISH KUMAR VERMA/CLI/BYT</option>
+                                <option value="BRIJESH YADAV/CLI/BYT">BRIJESH YADAV/CLI/BYT</option>
+                                <option value="RAM KISHOR YADAV/CLI/BYT">RAM KISHOR YADAV/CLI/BYT</option>
+                                <option value="NEELMANI SAHU/CLI/BYT">NEELMANI SAHU/CLI/BYT</option>
+                                <option value="DEEPAK KUMAR SWARNAKAR/CLI/BYT">DEEPAK KUMAR SWARNAKAR/CLI/BYT</option>
+                                <option value="PYARELAL SONWANI/CLI/BYT">PYARELAL SONWANI/CLI/BYT</option>
+                                <option value="SUNEET KUMAR/CLI/BYT">SUNEET KUMAR/CLI/BYT</option>
+                                <option value="BAL KRISHNA/CLI/BYT">BAL KRISHNA/CLI/BYT</option>
+                                <option value="DHANESH KUMAR/CLI/BYT">DHANESH KUMAR/CLI/BYT</option>
+                                <option value="SANDEEP PATIL/CLI/BYT">SANDEEP PATIL/CLI/BYT</option>
+                                <option value="BALESHWAR PAHAN/CLI/BYT">BALESHWAR PAHAN/CLI/BYT</option>
+                                <option value="VIJAY RAM/CLI/BYT">VIJAY RAM/CLI/BYT</option>
+                                <option value="OTHERS">OTHERS</option>
                         </select>
                         <input type="text" id="cli1NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
                     </div>
@@ -606,41 +718,97 @@
                     <div class="info-field">
                         <label>CLI Name &amp; HQ:</label>
                         <select id="cli2Name" onchange="toggleOtherInput('cli2Name','cli2NameOther')">
-                            <option value="">Select CLI Name and HQ</option>
-                            <option>A K REDDY/CLI/BIA</option><option>A.R.TARAM/CLI/BIA</option>
-                            <option>ABDUL MOIN KHAN/CLI/BIA</option><option>AKHILESH KUMAR/CLI/BIA</option>
-                            <option>AMIT KUMAR BANKURE/CLI/BYT</option><option>ANANT PRAKASH SHRIVASTAVA/CLI/BIA</option>
-                            <option>ANIL KUMAR/CLI/BIA</option><option>ANKIT RAM KANT/CLI/BIA</option>
-                            <option>AVON KUMAR SAHU/CLI/R</option><option>ASHISH WANJARI/CLI/BYT</option>
-                            <option>B B KUSHWAHA/CLI/BIA</option><option>B K HARMUKH/CLI/BIA</option>
-                            <option>B. K. SAHA/CLI/BIA</option><option>B.K.SONI/CLI/BIA</option>
-                            <option>BHARAT SINGH ATBHAIYYA/CLI/R</option><option>BHOLI CHAUDHARY/CLI/R</option>
-                            <option>BIKRAMJIT KANRAR/CLI/BIA</option><option>BINOD KUMAR RAM/CLI/R</option>
-                            <option>DEEPANNITA PUNTAMBEKAR/CLI/BIA</option><option>DILLI RAO/CLI/BYT</option>
-                            <option>G. C. BISWAS/CLI/R</option><option>G. V. R. K. MADHU/CLI/BIA</option>
-                            <option>GIRDHARI LAL/CLI/R</option><option>JAISHANKAR SHARMA/CLI/BIA</option>
-                            <option>JITENDRA KUMAR MISHRA/CLI/BYT</option><option>K P LAHARE/CLI/R</option>
-                            <option>K P HIRWANI/CLI/BYT</option><option>K. K. SAHU/CLI/BIA</option>
-                            <option>KHUSHAL SINGH/CLI/DRZ</option><option>MAHESHWAR/CLI/BIA</option>
-                            <option>MANOJ KUMAR SAO/CLI/BIA</option><option>MANSUKH LAL CHANDRAKAR/CLI/R</option>
-                            <option>MOHIT KUMAR SWARNKAR/CLI/BIA</option><option>N. R. KARPAL/CLI/BIA</option>
-                            <option>N.K. BHOI/CLI/R</option><option>NITIN KUKDE/CLI/BYT</option>
-                            <option>NIRMAL KUMAR/CLI/BYT</option><option>P.K. PATEL/CLI/BIA</option>
-                            <option>PANKAJ KUMAR SINGH/CLI/BIA</option><option>PAWAN KUMAR SINGH/CLI/BIA</option>
-                            <option>PALAK RAM ALENDRA/CLI/DRZ</option><option>RAJENDRA KUMAR/CLI/BIA</option>
-                            <option>RAJESH KUMAR DESHMUKH/CLI/R</option><option>RAJNEESH BENERJEE/CLI/BIA</option>
-                            <option>RANJEET SINGH/CLI/BYT</option><option>RAKESH KUMAR KOSTA/CLI/DRZ</option>
-                            <option>S K GAUTAM/CLI/BIA</option><option>S S HUSSAIN/CLI/BIA</option>
-                            <option>S. C. RAI/CLI/BIA</option><option>S. K. SINGH/CLI/BIA</option>
-                            <option>S. L. SONI/CLI/R</option><option>SANJAY KUMAR ROY/CLI/BIA</option>
-                            <option>SANJAY SINGH/CLI/BYT</option><option>SANJEEV KUMAR SHARMA/CLI/BIA</option>
-                            <option>SANTOSH KUAMAR PATKAR/CLI/BIA</option><option>SHAILENDRA SINGH/CLI/BIA</option>
-                            <option>SUNDEEP KUMAR SHARMA/CLI/BIA</option><option>SUNIL KUMAR DEWANGAN/CLI/BIA</option>
-                            <option>SANAT KUMAR SAHU/CLI/DRZ</option><option>V.K. BHAGAT/CLI/R</option>
-                            <option>VIJAY KUMAR ARYA/CLI/BIA</option><option>VIKAS SHENDE/CLI/BIA</option>
-                            <option>VINAY KUMAR VINCHURE/CLI/BIA</option><option>VINAY PANTAWANE/CLI/BIA</option>
-                            <option>Y. RAMU/CLI/BIA</option><option>YOGESH KUMAR MIHAULIA/CLI/BIA</option>
-                            <option>OTHERS</option>
+                                <option value="">Select CLI Name and HQ</option>
+                                <option value="A K REDDY/CLI/R">A K REDDY/CLI/R</option>
+                                <option value="A.R.TARAM/CLI/BIA">A.R. TARAM/CLI/BIA</option>
+                                <option value="ABDUL MOIN KHAN/CLI/BIA">ABDUL MOIN KHAN/CLI/BIA</option>
+                                <option value="AKHILESH KUMAR/CLI/BIA">AKHILESH KUMAR/CLI/BIA</option>
+                                <option value="AMIT KUMAR BANKURE/CLI/BIA">AMIT KUMAR BANKURE/CLI/BIA</option>
+                                <option value="ANANT PRAKASH SHRIVASTAVA/CLI/BIA">ANANT PRAKASH SHRIVASTAVA/CLI/BIA</option>
+                                <option value="ANIL KUMAR/CLI/BIA">ANIL KUMAR/CLI/BIA</option>
+                                <option value="ANKIT RAM KANT/CLI/BIA">ANKIT RAM KANT/CLI/BIA</option>
+                                <option value="AVON KUMAR SAHU/CLI/R">AVON KUMAR SAHU/CLI/R</option>
+                                <option value="ASHISH WANJARI/CLI/BIA">ASHISH WANJARI/CLI/BIA</option>
+                                <option value="B B KUSHWAHA/CLI/BIA">B B KUSHWAHA/CLI/BIA</option>
+                                <option value="B K HARMUKH/CLI/BIA">B K HARMUKH/CLI/BIA</option>
+                                <option value="B. K. SAHA/CLI/BIA">B. K. SAHA/CLI/BIA</option>
+                                <option value="B.K.SONI/CLI/BIA">B.K.SONI/CLI/BIA</option>
+                                <option value="BHARAT SINGH ATBHAIYYA/CLI/R">BHARAT SINGH ATBHAIYYA/CLI/R</option>
+                                <option value="BHOLI CHAUDHARY/CLI/R">BHOLI CHAUDHARY/CLI/R</option>
+                                <option value="BIKRAMJIT KANRAR/CLI/BIA">BIKRAMJIT KANRAR/CLI/BIA</option>
+                                <option value="BINOD KUMAR RAM/CLI/R">BINOD KUMAR RAM/CLI/R</option>
+                                <option value="CLI NAME/CLI/BIA">CLI NAME/CLI/BIA</option>
+                                <option value="DEEPANNITA PUNTAMBEKAR/CLI/BIA">DEEPANNITA PUNTAMBEKAR/CLI/BIA</option>
+                                <option value="DILLI RAO/CLI/BIA">DILLI RAO/CLI/BIA</option>
+                                <option value="G. C. BISWAS/CLI/R">G. C. BISWAS/CLI/R</option>
+                                <option value="G. V. R. K. MADHU/CLI/BIA">G. V. R. K. MADHU/CLI/BIA</option>
+                                <option value="GIRDHARI LAL/CLI/R">GIRDHARI LAL/CLI/R</option>
+                                <option value="JAISHANKAR SHARMA/CLI/BIA">JAISHANKAR SHARMA/CLI/BIA</option>
+                                <option value="JITENDRA KUMAR MISHRA/CLI/BIA">JITENDRA KUMAR MISHRA/CLI/BIA</option>
+                                <option value="K P LAHARE/CLI/R">K P LAHRE/CLI/BIA</option>
+                                <option value="K P HIRWANI/CLI/BIA">K P HIRWANI/CLI/BIA</option>
+                                <option value="K. K. SAHU/CLI/BIA">K. K. SAHU/CLI/BIA</option>
+                                <option value="KHUSHAL SINGH/CLI/DRZ">KHUSHAL SINGH/CLI/DRZ</option>
+                                <option value="KAMLESH KUMAR RAJABHOJ/CLI/BIA">KAMLESH KUMAR RAJABHOJ/CLI/BIA</option>
+                                <option value="MAHESHWAR/CLI/BIA">MAHESHWAR/CLI/BIA</option>
+                                <option value="MANOJ KUMAR SAO/CLI/BIA">MANOJ KUMAR SAO/CLI/BIA</option>
+                                <option value="MANSUKH LAL CHANDRAKAR/CLI/R">MANSUKH LAL CHANDRAKAR/CLI/R</option>
+                                <option value="MOHIT KUMAR SWARNKAR/CLI/BIA">MOHIT KUMAR SWARNKAR/CLI/BIA</option>
+                                <option value="N. R. KARPAL/CLI/BIA">N. R. KARPAL/CLI/BIA</option>
+                                <option value="N.K. BHOI/CLI/R">N.K. BHOI/CLI/R</option>
+                                <option value="NITIN KUKDE/CLI/BIA">NITIN KUKDE/CLI/BIA</option>
+                                <option value="NIRMAL KUMAR/CLI/BIA">NIRMAL KUMAR/CLI/BIA</option>
+                                <option value="P.K. PATEL/CLI/BIA">P.K. PATEL/CLI/BIA</option>
+                                <option value="PANKAJ KUMAR SINGH/CLI/BIA">PANKAJ KUMAR SINGH/CLI/BIA</option>
+                                <option value="PAWAN KUMAR SINGH/CLI/BIA">PAWAN KUMAR SINGH/CLI/BIA</option>
+                                <option value="PURAN LAL PATEL/CLI/BIA">PURAN LAL PATEL/CLI/BIA</option>
+                                <option value="RAJENDRA KUMAR/CLI/BIA">RAJENDRA KUMAR/CLI/BIA</option>
+                                <option value="RAJENDRA SINGH/CLI/BIA">RAJENDRA SINGH/CLI/BIA</option>
+                                <option value="PALAK RAM ALENDRA/CLI/DRZ">PALAK RAM ALENDRA/CLI/DRZ</option>
+                                <option value="RAJESH KUMAR DESHMUKH/CLI/R">RAJESH KUMAR DESHMUKH/CLI/R</option>
+                                <option value="RAJNEESH BENERJEE/CLI/BIA">RAJNEESH BENERJEE/CLI/BIA</option>
+                                <option value="RANJEET SINGH/CLI/BIA">RANJEET SINGH/CLI/BIA</option>
+                                <option value="RAKESH KUMAR KOSTA/CLI/DRZ">RAKESH KUMAR KOSTA/CLI/DRZ</option>
+                                <option value="S K GAUTAM/CLI/BIA">S K GAUTAM/CLI/BIA</option>
+                                <option value="S S HUSSAIN/CLI/BIA">S S HUSSAIN/CLI/BIA</option>
+                                <option value="S. C. RAI/CLI/BIA">S. C. RAI/CLI/BIA</option>
+                                <option value="S. K. SINGH/CLI/BIA">S. K. SINGH/CLI/BIA</option>
+                                <option value="S. L. SONI/CLI/R">S. L. SONI/CLI/R</option>
+                                <option value="SANJAY KUMAR ROY/CLI/BIA">SANJAY KUMAR ROY/CLI/BIA</option>
+                                <option value="SANJAY SINGH/CLI/DRZ">SANJAY SINGH/CLI/DRZ</option>
+                                <option value="SANJEEV KUMAR SHARMA/CLI/BIA">SANJEEV KUMAR SHARMA/CLI/BIA</option>
+                                <option value="SANTOSH KUAMAR PATKAR/CLI/BIA">SANTOSH KUAMAR PATKAR/CLI/BIA</option>
+                                <option value="SHAILENDRA SINGH/CLI/BIA">SHAILENDRA SINGH/CLI/BIA</option>
+                                <option value="SUNDEEP KUMAR SHARMA/CLI/BIA">SUNDEEP KUMAR SHARMA/CLI/BIA</option>
+                                <option value="SUNIL KUMAR DEWANGAN/CLI/BIA">SUNIL KUMAR DEWANGAN/CLI/BIA</option>
+                                <option value="SURENDRA KUMAR SONI/CLI/BYT">SURENDRA KUMAR SONI/CLI/BYT</option>
+                                <option value="SATYENDRA KUMAR/CLI/DRZ">SATYENDRA KUMAR/CLI/DRZ</option>
+                                <option value="SANAT KUMAR SAHU/CLI/DRZ">SANAT KUMAR SAHU/CLI/DRZ</option>
+                                <option value="TEST ID/CLI/BIA">TEST ID/CLI/BIA</option>
+                                <option value="V.K. BHAGAT/CLI/R">V.K. BHAGAT/CLI/R</option>
+                                <option value="VIJAY KUMAR ARYA/CLI/BIA">VIJAY KUMAR ARYA/CLI/BIA</option>
+                                <option value="VIKAS SHENDE/CLI/R">VIKAS SHENDE/CLI/R</option>
+                                <option value="VINAY KUMAR VINCHURE/CLI/BIA">VINAY KUMAR VINCHURE/CLI/BIA</option>
+                                <option value="VINAY PANTAWANE/CLI/BIA">VINAY PANTAWANE/CLI/BIA</option>
+                                <option value="Y. RAMU/CLI/BIA">Y. RAMU/CLI/BIA</option>
+                                <option value="YOGESH KUMAR MIHAULIA/CLI/BIA">YOGESH KUMAR MIHAULIA/CLI/BIA</option>
+                                <option value="GHANA RAM SAHU/CLI/BIA">GHANA RAM SAHU/CLI/BIA</option>
+                                <option value="HARESH SHRAWAN/CLI/BIA">HARESH SHRAWAN/CLI/BIA</option>
+                                <option value="RAJPUT MUKESH KUMAR/CLI/BIA">RAJPUT MUKESH KUMAR/CLI/BIA</option>
+                                <option value="NEELKANTH DEWANGAN/CLI/BIA">NEELKANTH DEWANGAN/CLI/BIA</option>
+                                <option value="GIRISH KUMAR VERMA/CLI/BYT">GIRISH KUMAR VERMA/CLI/BYT</option>
+                                <option value="BRIJESH YADAV/CLI/BYT">BRIJESH YADAV/CLI/BYT</option>
+                                <option value="RAM KISHOR YADAV/CLI/BYT">RAM KISHOR YADAV/CLI/BYT</option>
+                                <option value="NEELMANI SAHU/CLI/BYT">NEELMANI SAHU/CLI/BYT</option>
+                                <option value="DEEPAK KUMAR SWARNAKAR/CLI/BYT">DEEPAK KUMAR SWARNAKAR/CLI/BYT</option>
+                                <option value="PYARELAL SONWANI/CLI/BYT">PYARELAL SONWANI/CLI/BYT</option>
+                                <option value="SUNEET KUMAR/CLI/BYT">SUNEET KUMAR/CLI/BYT</option>
+                                <option value="BAL KRISHNA/CLI/BYT">BAL KRISHNA/CLI/BYT</option>
+                                <option value="DHANESH KUMAR/CLI/BYT">DHANESH KUMAR/CLI/BYT</option>
+                                <option value="SANDEEP PATIL/CLI/BYT">SANDEEP PATIL/CLI/BYT</option>
+                                <option value="BALESHWAR PAHAN/CLI/BYT">BALESHWAR PAHAN/CLI/BYT</option>
+                                <option value="VIJAY RAM/CLI/BYT">VIJAY RAM/CLI/BYT</option>
+                                <option value="OTHERS">OTHERS</option>
                         </select>
                         <input type="text" id="cli2NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
                     </div>
@@ -665,11 +833,21 @@
 
         <div id="message" class="message"></div>
 
+        <div id="savingPanel" class="saving-panel" role="status" aria-live="polite">
+            <div class="saving-ring-wrap">
+                <div class="saving-ring"></div>
+                <div class="saving-hand"><span>✋</span></div>
+            </div>
+            <div class="saving-title">⏳ PLEASE WAIT — DATA SAVING…</div>
+            <div class="saving-sub">Do not close or refresh this page</div>
+        </div>
+
         <div class="button-group">
             <button class="save-draft-btn" onclick="saveDraft()">💾 Save Draft</button>
             <button class="upload-draft-btn" onclick="document.getElementById('draftFileInput').click()">📂 Upload Draft</button>
             <button class="submit-btn" onclick="submitForm()">✅ Submit</button>
             <button class="pdf-btn" onclick="generatePDF()">📄 Generate PDF</button>
+            <button class="reset-btn" onclick="resetForm()">🔄 Reset</button>
         </div>
 
     </div><!-- /form-container -->
@@ -802,18 +980,71 @@ function collectSection(prefix, count) {
 }
 
 // ── Submit state flag ─────────────────────────────────────────────────────────
-let dataSubmitted = false;
+let dataSubmitted = false;   // true only after a successful submit in THIS session (never restored from draft)
+let isSubmitting  = false;
+let submissionId  = null;    // unique ID of the row saved in Google Sheet; reused for corrections
+let lastSubmittedSnap = null; // snapshot of the data last saved to the sheet (to detect "no change")
+
+function newSubmissionId() {
+    return 'RR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+}
+
+function _blockUnload(e) { e.preventDefault(); e.returnValue = ''; }
+
+// mode: 'submit' | 'submitting' | 'correction'
+function setSubmitBtn(mode) {
+    const btn = document.querySelector('.submit-btn');
+    if (!btn) return;
+    if (mode === 'submitting') {
+        btn.disabled = true; btn.style.opacity = '0.7'; btn.style.cursor = 'wait';
+        btn.textContent = '⏳ Submitting…';
+    } else {
+        btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = '';
+        btn.textContent = (mode === 'correction') ? '✏️ Submit Correction' : '✅ Submit';
+    }
+}
+
+// back to a fresh, never-submitted form (used by Clear Draft)
+function resetSubmitState() {
+    dataSubmitted = false;
+    submissionId  = null;
+    lastSubmittedSnap = null;
+    isSubmitting  = false;
+    setSubmitBtn('submit');
+}
+
+function setSubmitting(on) {
+    isSubmitting = on;
+    const panel = document.getElementById('savingPanel');
+    if (on) {
+        setSubmitBtn('submitting');
+        if (panel) {
+            panel.classList.add('active');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        window.addEventListener('beforeunload', _blockUnload);
+    } else {
+        if (panel) panel.classList.remove('active');
+        window.removeEventListener('beforeunload', _blockUnload);
+        setSubmitBtn(dataSubmitted ? 'correction' : 'submit');
+    }
+}
 
 // ── Submit ────────────────────────────────────────────────────────────────────
 const SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7WDM2HP5ukVhVtQCS2fwdJ2BvKnv9xszb8gMMK273j90Njwb5_nmtfgikZSdGYReciw/exec";
 
 function submitForm() {
-    if (dataSubmitted) {
-        showMessage('⚠️ Data Already Submitted! Cannot submit again.', 'error');
+    if (isSubmitting) return;
+
+    const isCorrection = dataSubmitted && !!submissionId;
+    const d = collectData();
+    const snapNow = JSON.stringify(d);
+
+    // same data already saved in Google Sheet -> do not save again
+    if (isCorrection && lastSubmittedSnap && snapNow === lastSubmittedSnap) {
+        showMessage('⚠️ Data Already Submitted! No changes found — edit something to submit a correction.', 'error');
         return;
     }
-
-    const d = collectData();
 
     if (!d.inspOfficialName || !d.runningRoom) {
         showMessage('❌ Please fill Inspecting Official Name and Running Room before submitting.', 'error');
@@ -861,7 +1092,11 @@ function submitForm() {
     const deficiencyText = allDef.length ? allDef.join(' | ') : (d.otherRemarks || 'NIL');
 
     const params = new URLSearchParams();
+    // same submissionId on a correction => Apps Script updates the existing row instead of adding a new one
+    if (!submissionId) submissionId = newSubmissionId();
     params.append('sheet',             'Running Room');
+    params.append('action',            isCorrection ? 'update' : 'submit');
+    params.append('submissionId',      submissionId);
     params.append('cliName1',          d.cli1.name + (d.cli1.place ? ' / ' + d.cli1.place : ''));
     params.append('cliName2',          d.cli2.name + (d.cli2.place ? ' / ' + d.cli2.place : ''));
     params.append('date',              d.inspDate);
@@ -873,7 +1108,8 @@ function submitForm() {
     params.append('railway',           d.gi.rly || '');
     params.append('deficiency',        deficiencyText);
 
-    showMessage('⏳ Saving to Google Sheet…', 'success');
+    document.getElementById('message').style.display = 'none';
+    setSubmitting(true);
 
     fetch(SHEET_SCRIPT_URL, {
         method:  'POST',
@@ -883,12 +1119,15 @@ function submitForm() {
     })
     .then(() => {
         dataSubmitted = true;
-        // visually lock the submit button
-        const btn = document.querySelector('.submit-btn');
-        if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; btn.style.cursor = 'not-allowed'; btn.textContent = '✅ Submitted'; }
-        showMessage('✅ Data Saved to Google Sheet Successfully!', 'success');
+        lastSubmittedSnap = snapNow;
+        setSubmitting(false);   // button becomes ✏️ SUBMIT CORRECTION
+        autoSaveNow();          // remember "submitted" state so a reload still shows SUBMIT CORRECTION
+        showMessage(isCorrection
+            ? '✅ Correction Saved — Existing Record Updated!'
+            : '✅ Data Saved to Google Sheet Successfully!', 'success');
     })
     .catch(err => {
+        setSubmitting(false);   // back to SUBMIT (first try) or SUBMIT CORRECTION (correction)
         showMessage('❌ Network error: ' + err.message, 'error');
     });
 }
@@ -1303,7 +1542,13 @@ function setAutosaveStatus(state, text) {
 function autoSaveNow() {
     try {
         const data = collectData();
-        const payload = { data, savedAt: new Date().toISOString() };
+        const payload = {
+            data,
+            savedAt: new Date().toISOString(),
+            submitted:    dataSubmitted,   // already saved to Google Sheet?
+            submissionId: submissionId,    // row Record ID (used for Submit Correction)
+            submittedSnap: lastSubmittedSnap // data as last saved to the sheet
+        };
         localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(payload));
         const t = new Date();
         const timeStr = t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -1342,9 +1587,17 @@ function restoreAutoSaveDraft() {
         if (d.cli1) { sv('cli1Name', d.cli1.name); sv('cli1Place', d.cli1.place); sv('cli1Date', d.cli1.date); }
         if (d.cli2) { sv('cli2Name', d.cli2.name); sv('cli2Place', d.cli2.place); sv('cli2Date', d.cli2.date); }
 
+        // restore submit state: a draft that was already submitted reopens as SUBMIT CORRECTION
+        submissionId  = payload.submissionId || null;
+        dataSubmitted = !!(payload.submitted && submissionId);
+        lastSubmittedSnap = dataSubmitted ? (payload.submittedSnap || null) : null;
+        setSubmitBtn(dataSubmitted ? 'correction' : 'submit');
+
         const savedAt = payload.savedAt ? new Date(payload.savedAt).toLocaleString('en-IN') : '';
         setAutosaveStatus('saved', 'Draft restored — ' + savedAt);
-        showMessage('✅ Auto-saved draft restored from: ' + savedAt, 'success');
+        showMessage(dataSubmitted
+            ? '✅ Last submitted draft restored (' + savedAt + ') — use SUBMIT CORRECTION to update it.'
+            : '✅ Auto-saved draft restored from: ' + savedAt, 'success');
         return true;
     } catch(e) {
         return false;
@@ -1366,8 +1619,43 @@ function clearAutoSaveDraft() {
     document.getElementById('cli1Date').value = today;
     document.getElementById('cli2Date').value = today;
 
+    resetSubmitState();
     setAutosaveStatus('', 'Draft cleared');
     showMessage('🗑️ Draft cleared — all fields have been reset.', 'success');
+}
+
+// ── RESET — turns the whole form blank (fresh form, not yet submitted) ───────
+function resetForm() {
+    if (isSubmitting) return;
+    if (!confirm('🔄 RESET FORM?\n\nAll entered data will be erased and the form will turn blank.')) return;
+
+    clearTimeout(autosaveTimer);
+    try { localStorage.removeItem(AUTOSAVE_KEY); } catch(e) {}
+
+    // text inputs, textareas, selects
+    document.querySelectorAll('input[type="text"], input[type="time"], textarea').forEach(el => { el.value = ''; el.style.height = ''; });
+    document.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
+
+    // manual "other" CLI name boxes
+    try { toggleOtherInput('cli1Name','cli1NameOther'); toggleOtherInput('cli2Name','cli2NameOther'); } catch(e) {}
+
+    // signature uploads + previews
+    ['cli1Sig','cli2Sig'].forEach(id => { const f = document.getElementById(id); if (f) f.value = ''; });
+    [['cli1SigPreview','cli1SigImg'],['cli2SigPreview','cli2SigImg']].forEach(([pv, im]) => {
+        const pe = document.getElementById(pv), ie = document.getElementById(im);
+        if (pe) pe.style.display = 'none';
+        if (ie) ie.removeAttribute('src');
+    });
+
+    // dates back to today (same as a freshly opened form)
+    const today = todayDMY();
+    ['inspDate','gi_date','cli1Date','cli2Date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = today; });
+
+    // back to a never-submitted form: button = SUBMIT, new row on next submit
+    resetSubmitState();
+    setAutosaveStatus('', 'No saved draft');
+    showMessage('🔄 Form reset — all fields are blank.', 'success');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function attachAutoSaveListeners() {
