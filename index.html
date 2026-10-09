@@ -171,6 +171,14 @@
             cursor:pointer;transition:all .3s;text-transform:uppercase;letter-spacing:1px;
             box-shadow:0 4px 10px rgba(0,0,0,.2);
         }
+        .submit-btn{background:linear-gradient(135deg,#3498db,#2980b9);color:#fff;}
+        .submit-btn:hover{background:linear-gradient(135deg,#2980b9,#21618c);transform:translateY(-2px);}
+        .pdf-btn{background:linear-gradient(135deg,#e67e22,#d35400);color:#fff;}
+        .pdf-btn:hover{background:linear-gradient(135deg,#d35400,#ba4a00);transform:translateY(-2px);}
+        .save-draft-btn{background:linear-gradient(135deg,#9b59b6,#8e44ad);color:#fff;}
+        .save-draft-btn:hover{background:linear-gradient(135deg,#8e44ad,#7d3c98);transform:translateY(-2px);}
+        .upload-draft-btn{background:linear-gradient(135deg,#16a085,#138d75);color:#fff;}
+        .upload-draft-btn:hover{background:linear-gradient(135deg,#138d75,#117a65);transform:translateY(-2px);}
 
         .message{
             display:none;margin-top:16px;padding:14px;border-radius:8px;
@@ -178,31 +186,6 @@
         }
         .message.success{background:#d4edda;color:#155724;border:2px solid #c3e6cb;}
         .message.error{background:#f8d7da;color:#721c24;border:2px solid #f5c6cb;}
-
-        /* ── SUBMIT SAVING ANIMATION ── */
-        .saving-panel{
-            display:none;flex-direction:column;align-items:center;text-align:center;
-            margin-top:18px;padding:18px 10px 8px;
-        }
-        .saving-panel.active{display:flex;}
-        .saving-ring-wrap{position:relative;width:90px;height:90px;}
-        .saving-ring{
-            position:absolute;inset:0;border-radius:50%;
-            border:8px solid #dcf3e2;border-top-color:#16a34a;border-left-color:#16a34a;
-            box-sizing:border-box;animation:savingSpin 1s linear infinite;
-        }
-        .saving-hand{
-            position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-            font-size:38px;line-height:1;
-        }
-        .saving-hand span{display:inline-block;animation:savingWave 1s ease-in-out infinite;}
-        .saving-title{margin-top:16px;font-size:1.35em;font-weight:bold;color:#16a34a;letter-spacing:.5px;}
-        .saving-sub{margin-top:6px;font-size:1em;font-weight:bold;color:#15803d;}
-        @keyframes savingSpin{to{transform:rotate(360deg);}}
-        @keyframes savingWave{
-            0%,100%{transform:rotate(-14deg);}
-            50%{transform:rotate(14deg);}
-        }
 
         /* ── ZOOM OVERLAY ── */
         .zoom-overlay{
@@ -260,46 +243,202 @@
             button{width:100%;}
         }
 
-        /* ── 3D BLACK ACTION BUTTONS (bottom button row) ── */
-        .button-group{gap:12px;margin-bottom:8px;}
-        .button-group button{
-            --c:#3498db; --d:#1f5f8b;              /* text colour / 3D edge colour */
-            padding:7px 14px;font-size:.75em;letter-spacing:.6px;border-radius:7px;
-            color:var(--c);text-shadow:0 1px 2px rgba(0,0,0,.9);
-            background:linear-gradient(180deg,#4d4d4d 0%,#1e1e1e 14%,#000 60%,#101010 100%);
-            border:1px solid #000;position:relative;
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,.35),
-                inset 0 -2px 3px rgba(255,255,255,.08),
-                0 4px 0 var(--d),
-                0 8px 10px rgba(0,0,0,.45);
-            transition:transform .12s ease, box-shadow .12s ease, filter .2s ease;
+        /* ═════════ MOBILE ONLY (auto on phones / Mobile toggle) ═════════ */
+        .btn-ico{margin-right:4px;}
+        .reset-btn{display:none;}
+        .reset-btn{background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;}
+
+        /* Saving overlay (animation) */
+        .save-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20000;align-items:center;justify-content:center;padding:16px;}
+        .save-overlay.active{display:flex;}
+        .save-card{background:#fff;border-radius:18px;padding:28px 22px;width:100%;max-width:380px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.35);}
+        .save-ring{position:relative;width:110px;height:110px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;}
+        .save-ring::before{content:'';position:absolute;inset:0;border-radius:50%;border:9px solid #d9f2e0;border-top-color:#16a34a;animation:saveSpin 1s linear infinite;}
+        .save-ring.done::before{animation:none;border-color:#16a34a;}
+        .save-icon{font-size:52px;line-height:1;}
+        .save-title{font-size:1.1em;font-weight:800;color:#16a34a;letter-spacing:.5px;}
+        .save-sub{margin-top:8px;font-size:.95em;font-weight:bold;color:#166534;}
+        @keyframes saveSpin{to{transform:rotate(360deg);}}
+
+        /* PDF ready modal */
+        .pdf-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20001;align-items:center;justify-content:center;padding:20px;}
+        .pdf-modal.active{display:flex;}
+        .pdf-card{background:#fff;border-radius:26px;padding:28px 22px;width:100%;max-width:420px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.35);}
+        .pdf-title{font-size:1.6em;font-weight:800;color:#16a34a;margin-bottom:8px;}
+        .pdf-card p{color:#333;font-size:1em;margin-bottom:18px;}
+        .pdf-card button{width:100%;margin-top:12px;padding:15px;border-radius:16px;font-size:1.05em;letter-spacing:.5px;}
+        .pdf-card .pdf-dl{background:#16a34a;color:#fff;text-transform:none;}
+        .pdf-card .pdf-share{background:#efefef;color:#222;}
+        .pdf-card .pdf-close{background:#efefef;color:#222;}
+
+        body.mobile-view{padding:0 0 96px 0;}
+        body.mobile-view .container{border-radius:0;box-shadow:none;}
+        body.mobile-view .header{padding:10px 12px;}
+        body.mobile-view .header-inner{flex-direction:column;text-align:center;gap:8px;}
+        body.mobile-view .header-text h1{font-size:1.15em;letter-spacing:1px;}
+        body.mobile-view .header-text h2{font-size:.85em;}
+        body.mobile-view .header-text h3{font-size:.75em;}
+        body.mobile-view .header-logo img{height:64px;width:64px;}
+        body.mobile-view .header-controls{flex-direction:row;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;}
+        body.mobile-view .form-container{padding:10px;}
+        body.mobile-view .info-section,
+        body.mobile-view .sig-section{padding:12px;margin-bottom:14px;}
+        body.mobile-view .info-fields{flex-direction:column;gap:10px;}
+        body.mobile-view .info-field{flex:1 1 100%;width:100%;}
+        body.mobile-view input[type="text"],
+        body.mobile-view input[type="time"],
+        body.mobile-view select,
+        body.mobile-view textarea{font-size:14px;padding:10px;}
+
+        /* tables → stacked cards */
+        body.mobile-view .table-wrapper{overflow-x:visible;box-shadow:none;border-radius:0;}
+        body.mobile-view table,
+        body.mobile-view tbody,
+        body.mobile-view tr,
+        body.mobile-view td{display:block;width:100%;}
+        body.mobile-view thead{display:none;}
+        body.mobile-view tbody tr{margin-bottom:12px;border:1px solid #b3d9ff;border-radius:10px;overflow:hidden;background:#fff !important;box-shadow:0 2px 6px rgba(0,0,0,.08);}
+        body.mobile-view td{text-align:left !important;border:none;border-bottom:1px solid #e3eefc;padding:8px 10px;font-size:13px;}
+        body.mobile-view td:last-child{border-bottom:none;}
+        body.mobile-view td::before{content:attr(data-label);display:block;font-size:10px;font-weight:bold;color:#4a6a8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+        body.mobile-view td[data-label='']::before{display:none;}
+        body.mobile-view td:first-child{background:#e6f2ff;font-weight:bold;}
+        body.mobile-view td input,
+        body.mobile-view td select{width:100% !important;min-width:0 !important;font-size:14px;padding:10px;}
+
+        /* messages as toast on top */
+        body.mobile-view .message{position:fixed;top:10px;left:10px;right:10px;z-index:10001;margin:0;}
+
+        /* full-screen text entry */
+        body.mobile-view .zoom-overlay{background:#fff;align-items:stretch;justify-content:stretch;}
+        body.mobile-view .zoom-input-container{width:100%;max-width:none;height:100%;border-radius:0;padding:14px;display:flex;flex-direction:column;box-shadow:none;}
+        body.mobile-view .zoom-input-title{font-size:1em;}
+        body.mobile-view .zoom-input{flex:1;min-height:0;height:auto;font-size:18px;resize:none;}
+        body.mobile-view .zoom-done-btn{padding:15px;font-size:1.1em;}
+
+        /* bottom navigation bar */
+        body.mobile-view .button-group{
+            position:fixed;left:0;right:0;bottom:0;z-index:1000;margin:0;
+            display:flex;flex-direction:row;flex-wrap:nowrap;gap:6px;justify-content:space-between;
+            padding:8px 8px calc(8px + env(safe-area-inset-bottom));
+            background:rgba(255,255,255,.96);box-shadow:0 -3px 12px rgba(0,0,0,.25);
         }
-        .button-group button:hover{
-            transform:translateY(-1px);filter:brightness(1.3);
-            box-shadow:
-                inset 0 1px 0 rgba(255,255,255,.4),
-                inset 0 -2px 3px rgba(255,255,255,.08),
-                0 5px 0 var(--d),
-                0 10px 12px rgba(0,0,0,.45);
+        body.mobile-view .button-group button{
+            flex:1 1 0;width:auto;min-width:0;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+            padding:9px 2px 7px;font-size:9.5px;letter-spacing:0;line-height:1.15;
+            background:#0f1420 !important;color:#fff;border-radius:10px;
+            border-bottom:3px solid transparent;box-shadow:0 2px 6px rgba(0,0,0,.35);
+            text-align:center;
         }
-        .button-group button:active,
-        .button-group button:disabled{
-            transform:translateY(4px);filter:none;
-            box-shadow:
-                inset 0 2px 4px rgba(0,0,0,.8),
-                0 0 0 var(--d),
-                0 2px 3px rgba(0,0,0,.4);
+        body.mobile-view .button-group button:hover{transform:none;}
+        body.mobile-view .button-group .btn-ico{margin:0;font-size:17px;line-height:1;}
+        body.mobile-view .button-group .save-draft-btn{border-bottom-color:#8e44ad;}
+        body.mobile-view .button-group .upload-draft-btn{border-bottom-color:#16a085;}
+        body.mobile-view .button-group .submit-btn{border-bottom-color:#2980b9;}
+        body.mobile-view .button-group .pdf-btn{border-bottom-color:#e67e22;}
+        body.mobile-view .button-group .reset-btn{display:flex;border-bottom-color:#e74c3c;}
+        body.mobile-view .button-group .submit-btn.is-submitted{background:#4b5563 !important;color:#cbd5e1;opacity:.85;cursor:not-allowed;}
+
+        /* ═════════ DESKTOP COMPACT ═════════ */
+        body:not(.mobile-view){padding:8px;}
+        body:not(.mobile-view) .header{padding:6px 16px;border-bottom-width:3px;}
+        body:not(.mobile-view) .header-inner{gap:12px;}
+        body:not(.mobile-view) .header-logo img{height:56px;width:56px;border-width:2px;}
+        body:not(.mobile-view) .header-text h1{font-size:1.25em;letter-spacing:1.5px;margin-bottom:0;}
+        body:not(.mobile-view) .header-text h2{font-size:.9em;margin-top:0;}
+        body:not(.mobile-view) .header-text h3{font-size:.78em;margin-top:0;}
+        body:not(.mobile-view) .header-controls{gap:3px;}
+        body:not(.mobile-view) .autosave-bar{padding:3px 16px;}
+        body:not(.mobile-view) .form-container{padding:12px;}
+        body:not(.mobile-view) .info-section{padding:10px 12px;margin-bottom:10px;}
+        body:not(.mobile-view) .info-section h2{font-size:1.02em;margin-bottom:8px;}
+        body:not(.mobile-view) .info-fields{gap:10px;margin-bottom:8px;}
+        body:not(.mobile-view) .info-field label{margin-bottom:2px;}
+        body:not(.mobile-view) input[type="text"],
+        body:not(.mobile-view) input[type="time"],
+        body:not(.mobile-view) select,
+        body:not(.mobile-view) textarea{padding:5px 8px;}
+        body:not(.mobile-view) .table-wrapper{margin-bottom:4px;}
+        body:not(.mobile-view) th{padding:5px 6px;}
+        body:not(.mobile-view) td{padding:3px 5px;}
+        body:not(.mobile-view) td input[type="text"]{padding:3px 5px;}
+        body:not(.mobile-view) .yn-select{padding:4px 6px;}
+        body:not(.mobile-view) .remarks-section{margin:0;}
+        body:not(.mobile-view) .button-group{margin-top:10px;gap:10px;}
+        body:not(.mobile-view) .button-group button{padding:8px 20px;font-size:.88em;}
+        body:not(.mobile-view) .message{margin-top:8px;padding:8px;}
+
+        /* ═════════ CLI NAME + SIGNATURE ROW ═════════ */
+        .sig-section{background:#e4eefc;padding:10px 12px;margin-bottom:10px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+        .sig-grid{display:grid;grid-template-columns:1.05fr 1fr 1.05fr 1fr;gap:14px;align-items:start;}
+        .sig-cell label{display:block;font-weight:bold;margin-bottom:4px;color:#1f2d3d;font-size:12px;}
+        .sig-cell select{width:100%;padding:8px 10px;border:2px solid #b3d9ff;border-radius:8px;background:#fff;font-size:12px;font-weight:bold;}
+        .sig-upload{background:#e8f1fd;border:2px solid #b3d9ff;border-radius:8px;padding:5px 8px;}
+        .sig-upload input[type="file"]{border:none;background:transparent;padding:0;width:100%;font-size:12px;font-weight:bold;}
+        .sig-cell .sig-preview{margin-top:6px;}
+        .sig-cell .sig-preview img{max-width:160px;max-height:60px;}
+        @media(max-width:900px){.sig-grid{grid-template-columns:1fr 1fr;}}
+        body.mobile-view .sig-grid{grid-template-columns:1fr;gap:10px;}
+
+        /* ═════════ DESKTOP 3D BUTTONS ═════════ */
+        body:not(.mobile-view) .button-group{gap:12px;margin:10px 0 8px;align-items:flex-start;}
+        body:not(.mobile-view) .button-group button{
+            flex:0 1 auto;max-width:160px;min-width:100px;
+            display:flex;align-items:center;justify-content:center;gap:7px;
+            padding:6px 14px;border-radius:9px;color:#fff;
+            font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;
+            text-shadow:0 1px 2px rgba(0,0,0,.55);
+            transition:transform .12s,box-shadow .12s,filter .12s;
         }
-        .button-group .save-draft-btn  {--c:#c07bf0;--d:#6c3483;}
-        .button-group .upload-draft-btn{--c:#2ee6c1;--d:#0e6655;}
-        .button-group .submit-btn      {--c:#5dade2;--d:#1f5f8b;}
-        .button-group .pdf-btn         {--c:#f5a04a;--d:#935116;}
-        .button-group .reset-btn       {--c:#ff6b5e;--d:#922b21;}
-        @media(max-width:768px){
-            .button-group{flex-direction:row;}
-            .button-group button{width:auto;flex:1 1 44%;}
+        body:not(.mobile-view) .button-group .btn-ico{margin:0;font-size:12px;}
+        body:not(.mobile-view) .button-group button:active:not(:disabled){transform:translateY(4px);}
+        body:not(.mobile-view) .button-group .pdf-btn{
+            background:linear-gradient(to bottom,rgba(255,255,255,.30) 0,rgba(255,255,255,.06) 48%,rgba(0,0,0,.06) 52%,rgba(0,0,0,.12) 100%),linear-gradient(to bottom,#2a5fa8,#123a78);
+            border:1px solid rgba(255,255,255,.35);border-bottom-color:rgba(0,0,0,.25);
+            box-shadow:0 5px 0 #0a2350,0 8px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.55);
         }
+        body:not(.mobile-view) .button-group .pdf-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+        body:not(.mobile-view) .button-group .save-draft-btn{
+            background:linear-gradient(to bottom,rgba(255,255,255,.30) 0,rgba(255,255,255,.06) 48%,rgba(0,0,0,.06) 52%,rgba(0,0,0,.12) 100%),linear-gradient(to bottom,#2fd0a0,#0fa075);
+            border:1px solid rgba(255,255,255,.35);border-bottom-color:rgba(0,0,0,.25);
+            box-shadow:0 5px 0 #0a6a4e,0 8px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.55);
+        }
+        body:not(.mobile-view) .button-group .save-draft-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+        body:not(.mobile-view) .button-group .upload-draft-btn{
+            background:linear-gradient(to bottom,rgba(255,255,255,.30) 0,rgba(255,255,255,.06) 48%,rgba(0,0,0,.06) 52%,rgba(0,0,0,.12) 100%),linear-gradient(to bottom,#4b8dff,#2557d6);
+            border:1px solid rgba(255,255,255,.35);border-bottom-color:rgba(0,0,0,.25);
+            box-shadow:0 5px 0 #173a99,0 8px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.55);
+        }
+        body:not(.mobile-view) .button-group .upload-draft-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+        body:not(.mobile-view) .button-group .reset-btn{
+            background:linear-gradient(to bottom,rgba(255,255,255,.30) 0,rgba(255,255,255,.06) 48%,rgba(0,0,0,.06) 52%,rgba(0,0,0,.12) 100%),linear-gradient(to bottom,#e8485f,#b9162f);
+            border:1px solid rgba(255,255,255,.35);border-bottom-color:rgba(0,0,0,.25);
+            box-shadow:0 5px 0 #7d0d1f,0 8px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.55);
+        }
+        body:not(.mobile-view) .button-group .reset-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+        body:not(.mobile-view) .button-group .submit-btn{
+            background:linear-gradient(to bottom,rgba(255,255,255,.30) 0,rgba(255,255,255,.06) 48%,rgba(0,0,0,.06) 52%,rgba(0,0,0,.12) 100%),linear-gradient(to bottom,#1f9a3a,#0d6a1f);
+            border:1px solid rgba(255,255,255,.35);border-bottom-color:rgba(0,0,0,.25);
+            box-shadow:0 5px 0 #064513,0 8px 12px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.55);
+        }
+        body:not(.mobile-view) .button-group .submit-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+        body:not(.mobile-view) .button-group .save-draft-btn:active,
+        body:not(.mobile-view) .button-group .upload-draft-btn:active,
+        body:not(.mobile-view) .button-group .submit-btn:active,
+        body:not(.mobile-view) .button-group .pdf-btn:active,
+        body:not(.mobile-view) .button-group .reset-btn:active{box-shadow:0 1px 0 rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.4);}
+        body:not(.mobile-view) .button-group .submit-btn.is-submitted{
+            background:linear-gradient(to bottom,rgba(255,255,255,.2),rgba(0,0,0,.1)),linear-gradient(to bottom,#7b8794,#55606c);
+            box-shadow:0 3px 0 #3b434c,0 5px 8px rgba(0,0,0,.25);filter:none;transform:none;
+        }
+        body:not(.mobile-view) .button-group .reset-btn{display:flex;}
+        body.mobile-view .clear-draft-btn{display:none !important;}
+        body.mobile-view .button-group{padding:4px 6px calc(4px + env(safe-area-inset-bottom));gap:5px;}
+        body.mobile-view .button-group button{padding:4px 2px 3px;gap:1px;font-size:8.5px;border-radius:8px;border-bottom-width:2px;}
+        body.mobile-view .button-group .btn-ico{font-size:13px;}
+        body.mobile-view{padding-bottom:62px;}
+        body.mobile-view .zoom-overlay{display:none !important;}
     </style>
 </head>
 <body>
@@ -313,6 +452,26 @@
         </div>
         <textarea class="zoom-input" id="zoomInput" placeholder="Type or speak here..."></textarea>
         <button class="zoom-done-btn" onclick="closeZoomInput()">✓ Done</button>
+    </div>
+</div>
+
+<!-- Saving overlay -->
+<div class="save-overlay" id="saveOverlay">
+    <div class="save-card">
+        <div class="save-ring" id="saveRing"><span class="save-icon" id="saveIcon">✋</span></div>
+        <div class="save-title" id="saveTitle">⏳ PLEASE WAIT — DATA SAVING...</div>
+        <div class="save-sub" id="saveSub">Do not close or refresh this page</div>
+    </div>
+</div>
+
+<!-- PDF ready modal -->
+<div class="pdf-modal" id="pdfModal">
+    <div class="pdf-card">
+        <div class="pdf-title">📄 PDF ready</div>
+        <p>If the download did not start, tap the button below.</p>
+        <button class="pdf-dl" onclick="downloadPdf()">⬇️ Download PDF</button>
+        <button class="pdf-share" onclick="sharePdf()">📤 Share / Save PDF</button>
+        <button class="pdf-close" onclick="closePdfModal()">Close</button>
     </div>
 </div>
 
@@ -595,235 +754,42 @@
 
         <!-- ── SECTION 10: TWO CLI SIGNATURES ── -->
         <div class="sig-section">
-         
             <div class="sig-grid">
 
-                <!-- CLI 1 -->
-                <div class="sig-card">
-                    <h3></h3>
-                    <div class="info-field">
-                        <label>1.CLI Name &amp; HQ:</label>
-                        <select id="cli1Name" onchange="toggleOtherInput('cli1Name','cli1NameOther')">
-                                <option value="">Select CLI Name and HQ</option>
-                                <option value="A K REDDY/CLI/R">A K REDDY/CLI/R</option>
-                                <option value="A.R.TARAM/CLI/BIA">A.R. TARAM/CLI/BIA</option>
-                                <option value="ABDUL MOIN KHAN/CLI/BIA">ABDUL MOIN KHAN/CLI/BIA</option>
-                                <option value="AKHILESH KUMAR/CLI/BIA">AKHILESH KUMAR/CLI/BIA</option>
-                                <option value="AMIT KUMAR BANKURE/CLI/BIA">AMIT KUMAR BANKURE/CLI/BIA</option>
-                                <option value="ANANT PRAKASH SHRIVASTAVA/CLI/BIA">ANANT PRAKASH SHRIVASTAVA/CLI/BIA</option>
-                                <option value="ANIL KUMAR/CLI/BIA">ANIL KUMAR/CLI/BIA</option>
-                                <option value="ANKIT RAM KANT/CLI/BIA">ANKIT RAM KANT/CLI/BIA</option>
-                                <option value="AVON KUMAR SAHU/CLI/R">AVON KUMAR SAHU/CLI/R</option>
-                                <option value="ASHISH WANJARI/CLI/BIA">ASHISH WANJARI/CLI/BIA</option>
-                                <option value="B B KUSHWAHA/CLI/BIA">B B KUSHWAHA/CLI/BIA</option>
-                                <option value="B K HARMUKH/CLI/BIA">B K HARMUKH/CLI/BIA</option>
-                                <option value="B. K. SAHA/CLI/BIA">B. K. SAHA/CLI/BIA</option>
-                                <option value="B.K.SONI/CLI/BIA">B.K.SONI/CLI/BIA</option>
-                                <option value="BHARAT SINGH ATBHAIYYA/CLI/R">BHARAT SINGH ATBHAIYYA/CLI/R</option>
-                                <option value="BHOLI CHAUDHARY/CLI/R">BHOLI CHAUDHARY/CLI/R</option>
-                                <option value="BIKRAMJIT KANRAR/CLI/BIA">BIKRAMJIT KANRAR/CLI/BIA</option>
-                                <option value="BINOD KUMAR RAM/CLI/R">BINOD KUMAR RAM/CLI/R</option>
-                                <option value="CLI NAME/CLI/BIA">CLI NAME/CLI/BIA</option>
-                                <option value="DEEPANNITA PUNTAMBEKAR/CLI/BIA">DEEPANNITA PUNTAMBEKAR/CLI/BIA</option>
-                                <option value="DILLI RAO/CLI/BIA">DILLI RAO/CLI/BIA</option>
-                                <option value="G. C. BISWAS/CLI/R">G. C. BISWAS/CLI/R</option>
-                                <option value="G. V. R. K. MADHU/CLI/BIA">G. V. R. K. MADHU/CLI/BIA</option>
-                                <option value="GIRDHARI LAL/CLI/R">GIRDHARI LAL/CLI/R</option>
-                                <option value="JAISHANKAR SHARMA/CLI/BIA">JAISHANKAR SHARMA/CLI/BIA</option>
-                                <option value="JITENDRA KUMAR MISHRA/CLI/BIA">JITENDRA KUMAR MISHRA/CLI/BIA</option>
-                                <option value="K P LAHARE/CLI/R">K P LAHRE/CLI/BIA</option>
-                                <option value="K P HIRWANI/CLI/BIA">K P HIRWANI/CLI/BIA</option>
-                                <option value="K. K. SAHU/CLI/BIA">K. K. SAHU/CLI/BIA</option>
-                                <option value="KHUSHAL SINGH/CLI/DRZ">KHUSHAL SINGH/CLI/DRZ</option>
-                                <option value="KAMLESH KUMAR RAJABHOJ/CLI/BIA">KAMLESH KUMAR RAJABHOJ/CLI/BIA</option>
-                                <option value="MAHESHWAR/CLI/BIA">MAHESHWAR/CLI/BIA</option>
-                                <option value="MANOJ KUMAR SAO/CLI/BIA">MANOJ KUMAR SAO/CLI/BIA</option>
-                                <option value="MANSUKH LAL CHANDRAKAR/CLI/R">MANSUKH LAL CHANDRAKAR/CLI/R</option>
-                                <option value="MOHIT KUMAR SWARNKAR/CLI/BIA">MOHIT KUMAR SWARNKAR/CLI/BIA</option>
-                                <option value="N. R. KARPAL/CLI/BIA">N. R. KARPAL/CLI/BIA</option>
-                                <option value="N.K. BHOI/CLI/R">N.K. BHOI/CLI/R</option>
-                                <option value="NITIN KUKDE/CLI/BIA">NITIN KUKDE/CLI/BIA</option>
-                                <option value="NIRMAL KUMAR/CLI/BIA">NIRMAL KUMAR/CLI/BIA</option>
-                                <option value="P.K. PATEL/CLI/BIA">P.K. PATEL/CLI/BIA</option>
-                                <option value="PANKAJ KUMAR SINGH/CLI/BIA">PANKAJ KUMAR SINGH/CLI/BIA</option>
-                                <option value="PAWAN KUMAR SINGH/CLI/BIA">PAWAN KUMAR SINGH/CLI/BIA</option>
-                                <option value="PURAN LAL PATEL/CLI/BIA">PURAN LAL PATEL/CLI/BIA</option>
-                                <option value="RAJENDRA KUMAR/CLI/BIA">RAJENDRA KUMAR/CLI/BIA</option>
-                                <option value="RAJENDRA SINGH/CLI/BIA">RAJENDRA SINGH/CLI/BIA</option>
-                                <option value="PALAK RAM ALENDRA/CLI/DRZ">PALAK RAM ALENDRA/CLI/DRZ</option>
-                                <option value="RAJESH KUMAR DESHMUKH/CLI/R">RAJESH KUMAR DESHMUKH/CLI/R</option>
-                                <option value="RAJNEESH BENERJEE/CLI/BIA">RAJNEESH BENERJEE/CLI/BIA</option>
-                                <option value="RANJEET SINGH/CLI/BIA">RANJEET SINGH/CLI/BIA</option>
-                                <option value="RAKESH KUMAR KOSTA/CLI/DRZ">RAKESH KUMAR KOSTA/CLI/DRZ</option>
-                                <option value="S K GAUTAM/CLI/BIA">S K GAUTAM/CLI/BIA</option>
-                                <option value="S S HUSSAIN/CLI/BIA">S S HUSSAIN/CLI/BIA</option>
-                                <option value="S. C. RAI/CLI/BIA">S. C. RAI/CLI/BIA</option>
-                                <option value="S. K. SINGH/CLI/BIA">S. K. SINGH/CLI/BIA</option>
-                                <option value="S. L. SONI/CLI/R">S. L. SONI/CLI/R</option>
-                                <option value="SANJAY KUMAR ROY/CLI/BIA">SANJAY KUMAR ROY/CLI/BIA</option>
-                                <option value="SANJAY SINGH/CLI/DRZ">SANJAY SINGH/CLI/DRZ</option>
-                                <option value="SANJEEV KUMAR SHARMA/CLI/BIA">SANJEEV KUMAR SHARMA/CLI/BIA</option>
-                                <option value="SANTOSH KUAMAR PATKAR/CLI/BIA">SANTOSH KUAMAR PATKAR/CLI/BIA</option>
-                                <option value="SHAILENDRA SINGH/CLI/BIA">SHAILENDRA SINGH/CLI/BIA</option>
-                                <option value="SUNDEEP KUMAR SHARMA/CLI/BIA">SUNDEEP KUMAR SHARMA/CLI/BIA</option>
-                                <option value="SUNIL KUMAR DEWANGAN/CLI/BIA">SUNIL KUMAR DEWANGAN/CLI/BIA</option>
-                                <option value="SURENDRA KUMAR SONI/CLI/BYT">SURENDRA KUMAR SONI/CLI/BYT</option>
-                                <option value="SATYENDRA KUMAR/CLI/DRZ">SATYENDRA KUMAR/CLI/DRZ</option>
-                                <option value="SANAT KUMAR SAHU/CLI/DRZ">SANAT KUMAR SAHU/CLI/DRZ</option>
-                                <option value="TEST ID/CLI/BIA">TEST ID/CLI/BIA</option>
-                                <option value="V.K. BHAGAT/CLI/R">V.K. BHAGAT/CLI/R</option>
-                                <option value="VIJAY KUMAR ARYA/CLI/BIA">VIJAY KUMAR ARYA/CLI/BIA</option>
-                                <option value="VIKAS SHENDE/CLI/R">VIKAS SHENDE/CLI/R</option>
-                                <option value="VINAY KUMAR VINCHURE/CLI/BIA">VINAY KUMAR VINCHURE/CLI/BIA</option>
-                                <option value="VINAY PANTAWANE/CLI/BIA">VINAY PANTAWANE/CLI/BIA</option>
-                                <option value="Y. RAMU/CLI/BIA">Y. RAMU/CLI/BIA</option>
-                                <option value="YOGESH KUMAR MIHAULIA/CLI/BIA">YOGESH KUMAR MIHAULIA/CLI/BIA</option>
-                                <option value="GHANA RAM SAHU/CLI/BIA">GHANA RAM SAHU/CLI/BIA</option>
-                                <option value="HARESH SHRAWAN/CLI/BIA">HARESH SHRAWAN/CLI/BIA</option>
-                                <option value="RAJPUT MUKESH KUMAR/CLI/BIA">RAJPUT MUKESH KUMAR/CLI/BIA</option>
-                                <option value="NEELKANTH DEWANGAN/CLI/BIA">NEELKANTH DEWANGAN/CLI/BIA</option>
-                                <option value="GIRISH KUMAR VERMA/CLI/BYT">GIRISH KUMAR VERMA/CLI/BYT</option>
-                                <option value="BRIJESH YADAV/CLI/BYT">BRIJESH YADAV/CLI/BYT</option>
-                                <option value="RAM KISHOR YADAV/CLI/BYT">RAM KISHOR YADAV/CLI/BYT</option>
-                                <option value="NEELMANI SAHU/CLI/BYT">NEELMANI SAHU/CLI/BYT</option>
-                                <option value="DEEPAK KUMAR SWARNAKAR/CLI/BYT">DEEPAK KUMAR SWARNAKAR/CLI/BYT</option>
-                                <option value="PYARELAL SONWANI/CLI/BYT">PYARELAL SONWANI/CLI/BYT</option>
-                                <option value="SUNEET KUMAR/CLI/BYT">SUNEET KUMAR/CLI/BYT</option>
-                                <option value="BAL KRISHNA/CLI/BYT">BAL KRISHNA/CLI/BYT</option>
-                                <option value="DHANESH KUMAR/CLI/BYT">DHANESH KUMAR/CLI/BYT</option>
-                                <option value="SANDEEP PATIL/CLI/BYT">SANDEEP PATIL/CLI/BYT</option>
-                                <option value="BALESHWAR PAHAN/CLI/BYT">BALESHWAR PAHAN/CLI/BYT</option>
-                                <option value="VIJAY RAM/CLI/BYT">VIJAY RAM/CLI/BYT</option>
-                                <option value="OTHERS">OTHERS</option>
+                <div class="sig-cell">
+                    <label>CLI Name &amp; HQ:</label>
+                    <select id="cli1Name" onchange="toggleOtherInput('cli1Name','cli1NameOther')">
+                            <option value="">Select CLI Name and HQ</option>
+                            <option>OTHERS</option>
                         </select>
-                        <input type="text" id="cli1NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
-                    </div>
-                    
-                    <div class="info-field" style="margin-top:8px;">
-                        <label>Date:</label>
-                        <input type="text" id="cli1Date" placeholder="DD/MM/YYYY" maxlength="10" oninput="dateMask(this)">
-                    </div>
-                    <div class="info-field" style="margin-top:8px;text-align:center;">
-                        <label>Upload Signature:</label>
-                        <input type="file" id="cli1Sig" accept="image/*" onchange="previewSig(event,'cli1SigPreview','cli1SigImg')">
-                        <div class="sig-preview" id="cli1SigPreview">
-                            <img id="cli1SigImg" alt="CLI 1 Signature">
-                        </div>
-                    </div>
+                    <input type="text" id="cli1NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
+                    <input type="text" id="cli1Date" maxlength="10" oninput="dateMask(this)" style="display:none;">
                 </div>
 
-                <!-- CLI 2 -->
-                <div class="sig-card">
-                    <h3></h3>
-                    <div class="info-field">
-                        <label>CLI Name &amp; HQ:</label>
-                        <select id="cli2Name" onchange="toggleOtherInput('cli2Name','cli2NameOther')">
-                                <option value="">Select CLI Name and HQ</option>
-                                <option value="A K REDDY/CLI/R">A K REDDY/CLI/R</option>
-                                <option value="A.R.TARAM/CLI/BIA">A.R. TARAM/CLI/BIA</option>
-                                <option value="ABDUL MOIN KHAN/CLI/BIA">ABDUL MOIN KHAN/CLI/BIA</option>
-                                <option value="AKHILESH KUMAR/CLI/BIA">AKHILESH KUMAR/CLI/BIA</option>
-                                <option value="AMIT KUMAR BANKURE/CLI/BIA">AMIT KUMAR BANKURE/CLI/BIA</option>
-                                <option value="ANANT PRAKASH SHRIVASTAVA/CLI/BIA">ANANT PRAKASH SHRIVASTAVA/CLI/BIA</option>
-                                <option value="ANIL KUMAR/CLI/BIA">ANIL KUMAR/CLI/BIA</option>
-                                <option value="ANKIT RAM KANT/CLI/BIA">ANKIT RAM KANT/CLI/BIA</option>
-                                <option value="AVON KUMAR SAHU/CLI/R">AVON KUMAR SAHU/CLI/R</option>
-                                <option value="ASHISH WANJARI/CLI/BIA">ASHISH WANJARI/CLI/BIA</option>
-                                <option value="B B KUSHWAHA/CLI/BIA">B B KUSHWAHA/CLI/BIA</option>
-                                <option value="B K HARMUKH/CLI/BIA">B K HARMUKH/CLI/BIA</option>
-                                <option value="B. K. SAHA/CLI/BIA">B. K. SAHA/CLI/BIA</option>
-                                <option value="B.K.SONI/CLI/BIA">B.K.SONI/CLI/BIA</option>
-                                <option value="BHARAT SINGH ATBHAIYYA/CLI/R">BHARAT SINGH ATBHAIYYA/CLI/R</option>
-                                <option value="BHOLI CHAUDHARY/CLI/R">BHOLI CHAUDHARY/CLI/R</option>
-                                <option value="BIKRAMJIT KANRAR/CLI/BIA">BIKRAMJIT KANRAR/CLI/BIA</option>
-                                <option value="BINOD KUMAR RAM/CLI/R">BINOD KUMAR RAM/CLI/R</option>
-                                <option value="CLI NAME/CLI/BIA">CLI NAME/CLI/BIA</option>
-                                <option value="DEEPANNITA PUNTAMBEKAR/CLI/BIA">DEEPANNITA PUNTAMBEKAR/CLI/BIA</option>
-                                <option value="DILLI RAO/CLI/BIA">DILLI RAO/CLI/BIA</option>
-                                <option value="G. C. BISWAS/CLI/R">G. C. BISWAS/CLI/R</option>
-                                <option value="G. V. R. K. MADHU/CLI/BIA">G. V. R. K. MADHU/CLI/BIA</option>
-                                <option value="GIRDHARI LAL/CLI/R">GIRDHARI LAL/CLI/R</option>
-                                <option value="JAISHANKAR SHARMA/CLI/BIA">JAISHANKAR SHARMA/CLI/BIA</option>
-                                <option value="JITENDRA KUMAR MISHRA/CLI/BIA">JITENDRA KUMAR MISHRA/CLI/BIA</option>
-                                <option value="K P LAHARE/CLI/R">K P LAHRE/CLI/BIA</option>
-                                <option value="K P HIRWANI/CLI/BIA">K P HIRWANI/CLI/BIA</option>
-                                <option value="K. K. SAHU/CLI/BIA">K. K. SAHU/CLI/BIA</option>
-                                <option value="KHUSHAL SINGH/CLI/DRZ">KHUSHAL SINGH/CLI/DRZ</option>
-                                <option value="KAMLESH KUMAR RAJABHOJ/CLI/BIA">KAMLESH KUMAR RAJABHOJ/CLI/BIA</option>
-                                <option value="MAHESHWAR/CLI/BIA">MAHESHWAR/CLI/BIA</option>
-                                <option value="MANOJ KUMAR SAO/CLI/BIA">MANOJ KUMAR SAO/CLI/BIA</option>
-                                <option value="MANSUKH LAL CHANDRAKAR/CLI/R">MANSUKH LAL CHANDRAKAR/CLI/R</option>
-                                <option value="MOHIT KUMAR SWARNKAR/CLI/BIA">MOHIT KUMAR SWARNKAR/CLI/BIA</option>
-                                <option value="N. R. KARPAL/CLI/BIA">N. R. KARPAL/CLI/BIA</option>
-                                <option value="N.K. BHOI/CLI/R">N.K. BHOI/CLI/R</option>
-                                <option value="NITIN KUKDE/CLI/BIA">NITIN KUKDE/CLI/BIA</option>
-                                <option value="NIRMAL KUMAR/CLI/BIA">NIRMAL KUMAR/CLI/BIA</option>
-                                <option value="P.K. PATEL/CLI/BIA">P.K. PATEL/CLI/BIA</option>
-                                <option value="PANKAJ KUMAR SINGH/CLI/BIA">PANKAJ KUMAR SINGH/CLI/BIA</option>
-                                <option value="PAWAN KUMAR SINGH/CLI/BIA">PAWAN KUMAR SINGH/CLI/BIA</option>
-                                <option value="PURAN LAL PATEL/CLI/BIA">PURAN LAL PATEL/CLI/BIA</option>
-                                <option value="RAJENDRA KUMAR/CLI/BIA">RAJENDRA KUMAR/CLI/BIA</option>
-                                <option value="RAJENDRA SINGH/CLI/BIA">RAJENDRA SINGH/CLI/BIA</option>
-                                <option value="PALAK RAM ALENDRA/CLI/DRZ">PALAK RAM ALENDRA/CLI/DRZ</option>
-                                <option value="RAJESH KUMAR DESHMUKH/CLI/R">RAJESH KUMAR DESHMUKH/CLI/R</option>
-                                <option value="RAJNEESH BENERJEE/CLI/BIA">RAJNEESH BENERJEE/CLI/BIA</option>
-                                <option value="RANJEET SINGH/CLI/BIA">RANJEET SINGH/CLI/BIA</option>
-                                <option value="RAKESH KUMAR KOSTA/CLI/DRZ">RAKESH KUMAR KOSTA/CLI/DRZ</option>
-                                <option value="S K GAUTAM/CLI/BIA">S K GAUTAM/CLI/BIA</option>
-                                <option value="S S HUSSAIN/CLI/BIA">S S HUSSAIN/CLI/BIA</option>
-                                <option value="S. C. RAI/CLI/BIA">S. C. RAI/CLI/BIA</option>
-                                <option value="S. K. SINGH/CLI/BIA">S. K. SINGH/CLI/BIA</option>
-                                <option value="S. L. SONI/CLI/R">S. L. SONI/CLI/R</option>
-                                <option value="SANJAY KUMAR ROY/CLI/BIA">SANJAY KUMAR ROY/CLI/BIA</option>
-                                <option value="SANJAY SINGH/CLI/DRZ">SANJAY SINGH/CLI/DRZ</option>
-                                <option value="SANJEEV KUMAR SHARMA/CLI/BIA">SANJEEV KUMAR SHARMA/CLI/BIA</option>
-                                <option value="SANTOSH KUAMAR PATKAR/CLI/BIA">SANTOSH KUAMAR PATKAR/CLI/BIA</option>
-                                <option value="SHAILENDRA SINGH/CLI/BIA">SHAILENDRA SINGH/CLI/BIA</option>
-                                <option value="SUNDEEP KUMAR SHARMA/CLI/BIA">SUNDEEP KUMAR SHARMA/CLI/BIA</option>
-                                <option value="SUNIL KUMAR DEWANGAN/CLI/BIA">SUNIL KUMAR DEWANGAN/CLI/BIA</option>
-                                <option value="SURENDRA KUMAR SONI/CLI/BYT">SURENDRA KUMAR SONI/CLI/BYT</option>
-                                <option value="SATYENDRA KUMAR/CLI/DRZ">SATYENDRA KUMAR/CLI/DRZ</option>
-                                <option value="SANAT KUMAR SAHU/CLI/DRZ">SANAT KUMAR SAHU/CLI/DRZ</option>
-                                <option value="TEST ID/CLI/BIA">TEST ID/CLI/BIA</option>
-                                <option value="V.K. BHAGAT/CLI/R">V.K. BHAGAT/CLI/R</option>
-                                <option value="VIJAY KUMAR ARYA/CLI/BIA">VIJAY KUMAR ARYA/CLI/BIA</option>
-                                <option value="VIKAS SHENDE/CLI/R">VIKAS SHENDE/CLI/R</option>
-                                <option value="VINAY KUMAR VINCHURE/CLI/BIA">VINAY KUMAR VINCHURE/CLI/BIA</option>
-                                <option value="VINAY PANTAWANE/CLI/BIA">VINAY PANTAWANE/CLI/BIA</option>
-                                <option value="Y. RAMU/CLI/BIA">Y. RAMU/CLI/BIA</option>
-                                <option value="YOGESH KUMAR MIHAULIA/CLI/BIA">YOGESH KUMAR MIHAULIA/CLI/BIA</option>
-                                <option value="GHANA RAM SAHU/CLI/BIA">GHANA RAM SAHU/CLI/BIA</option>
-                                <option value="HARESH SHRAWAN/CLI/BIA">HARESH SHRAWAN/CLI/BIA</option>
-                                <option value="RAJPUT MUKESH KUMAR/CLI/BIA">RAJPUT MUKESH KUMAR/CLI/BIA</option>
-                                <option value="NEELKANTH DEWANGAN/CLI/BIA">NEELKANTH DEWANGAN/CLI/BIA</option>
-                                <option value="GIRISH KUMAR VERMA/CLI/BYT">GIRISH KUMAR VERMA/CLI/BYT</option>
-                                <option value="BRIJESH YADAV/CLI/BYT">BRIJESH YADAV/CLI/BYT</option>
-                                <option value="RAM KISHOR YADAV/CLI/BYT">RAM KISHOR YADAV/CLI/BYT</option>
-                                <option value="NEELMANI SAHU/CLI/BYT">NEELMANI SAHU/CLI/BYT</option>
-                                <option value="DEEPAK KUMAR SWARNAKAR/CLI/BYT">DEEPAK KUMAR SWARNAKAR/CLI/BYT</option>
-                                <option value="PYARELAL SONWANI/CLI/BYT">PYARELAL SONWANI/CLI/BYT</option>
-                                <option value="SUNEET KUMAR/CLI/BYT">SUNEET KUMAR/CLI/BYT</option>
-                                <option value="BAL KRISHNA/CLI/BYT">BAL KRISHNA/CLI/BYT</option>
-                                <option value="DHANESH KUMAR/CLI/BYT">DHANESH KUMAR/CLI/BYT</option>
-                                <option value="SANDEEP PATIL/CLI/BYT">SANDEEP PATIL/CLI/BYT</option>
-                                <option value="BALESHWAR PAHAN/CLI/BYT">BALESHWAR PAHAN/CLI/BYT</option>
-                                <option value="VIJAY RAM/CLI/BYT">VIJAY RAM/CLI/BYT</option>
-                                <option value="OTHERS">OTHERS</option>
+                <div class="sig-cell">
+                    <label>Upload Signature:</label>
+                    <div class="sig-upload">
+                        <input type="file" id="cli1Sig" accept="image/*" onchange="previewSig(event,'cli1SigPreview','cli1SigImg')">
+                    </div>
+                    <div class="sig-preview" id="cli1SigPreview"><img id="cli1SigImg" alt="CLI 1 Signature"></div>
+                </div>
+
+                <div class="sig-cell">
+                    <label>2nd CLI Name &amp; HQ:</label>
+                    <select id="cli2Name" onchange="toggleOtherInput('cli2Name','cli2NameOther')">
+                            <option value="">Select 2nd CLI Name and HQ (optional)</option>
+                            <option>OTHERS</option>
                         </select>
-                        <input type="text" id="cli2NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
-                    </div>
-                   
-                    <div class="info-field" style="margin-top:6px;">
-                        <label>Date:</label>
-                        <input type="text" id="cli2Date" placeholder="DD/MM/YYYY" maxlength="10" oninput="dateMask(this)">
-                    </div>
-                    <div class="info-field" style="margin-top:8px;text-align:center;">
-                        <label>Upload Signature:</label>
+                    <input type="text" id="cli2NameOther" placeholder="ENTER NAME &amp; HQ MANUALLY" style="display:none;margin-top:6px;border:2px solid #e74c3c;">
+                    <input type="text" id="cli2Date" maxlength="10" oninput="dateMask(this)" style="display:none;">
+                </div>
+
+                <div class="sig-cell">
+                    <label>Upload 2nd Signature:</label>
+                    <div class="sig-upload">
                         <input type="file" id="cli2Sig" accept="image/*" onchange="previewSig(event,'cli2SigPreview','cli2SigImg')">
-                        <div class="sig-preview" id="cli2SigPreview">
-                            <img id="cli2SigImg" alt="CLI 2 Signature">
-                        </div>
                     </div>
+                    <div class="sig-preview" id="cli2SigPreview"><img id="cli2SigImg" alt="CLI 2 Signature"></div>
                 </div>
 
             </div><!-- /sig-grid -->
@@ -833,21 +799,12 @@
 
         <div id="message" class="message"></div>
 
-        <div id="savingPanel" class="saving-panel" role="status" aria-live="polite">
-            <div class="saving-ring-wrap">
-                <div class="saving-ring"></div>
-                <div class="saving-hand"><span>✋</span></div>
-            </div>
-            <div class="saving-title">⏳ PLEASE WAIT — DATA SAVING…</div>
-            <div class="saving-sub">Do not close or refresh this page</div>
-        </div>
-
         <div class="button-group">
-            <button class="save-draft-btn" onclick="saveDraft()">💾 Save Draft</button>
-            <button class="upload-draft-btn" onclick="document.getElementById('draftFileInput').click()">📂 Upload Draft</button>
-            <button class="submit-btn" onclick="submitForm()">✅ Submit</button>
-            <button class="pdf-btn" onclick="generatePDF()">📄 Generate PDF</button>
-            <button class="reset-btn" onclick="resetForm()">🔄 Reset</button>
+            <button class="save-draft-btn" onclick="saveDraft()"><span class="btn-ico">💾</span><span class="btn-label">Save Draft</span></button>
+            <button class="upload-draft-btn" onclick="document.getElementById('draftFileInput').click()"><span class="btn-ico">📂</span><span class="btn-label">Upload Draft</span></button>
+            <button class="submit-btn" id="submitBtn" onclick="submitForm()"><span class="btn-ico">✅</span><span class="btn-label">Submit</span></button>
+            <button class="pdf-btn" onclick="generatePDF()"><span class="btn-ico">📄</span><span class="btn-label">Generate PDF</span></button>
+            <button class="reset-btn" onclick="resetForm()"><span class="btn-ico">🔄</span><span class="btn-label">Reset</span></button>
         </div>
 
     </div><!-- /form-container -->
@@ -980,71 +937,18 @@ function collectSection(prefix, count) {
 }
 
 // ── Submit state flag ─────────────────────────────────────────────────────────
-let dataSubmitted = false;   // true only after a successful submit in THIS session (never restored from draft)
-let isSubmitting  = false;
-let submissionId  = null;    // unique ID of the row saved in Google Sheet; reused for corrections
-let lastSubmittedSnap = null; // snapshot of the data last saved to the sheet (to detect "no change")
-
-function newSubmissionId() {
-    return 'RR-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 7).toUpperCase();
-}
-
-function _blockUnload(e) { e.preventDefault(); e.returnValue = ''; }
-
-// mode: 'submit' | 'submitting' | 'correction'
-function setSubmitBtn(mode) {
-    const btn = document.querySelector('.submit-btn');
-    if (!btn) return;
-    if (mode === 'submitting') {
-        btn.disabled = true; btn.style.opacity = '0.7'; btn.style.cursor = 'wait';
-        btn.textContent = '⏳ Submitting…';
-    } else {
-        btn.disabled = false; btn.style.opacity = ''; btn.style.cursor = '';
-        btn.textContent = (mode === 'correction') ? '✏️ Submit Correction' : '✅ Submit';
-    }
-}
-
-// back to a fresh, never-submitted form (used by Clear Draft)
-function resetSubmitState() {
-    dataSubmitted = false;
-    submissionId  = null;
-    lastSubmittedSnap = null;
-    isSubmitting  = false;
-    setSubmitBtn('submit');
-}
-
-function setSubmitting(on) {
-    isSubmitting = on;
-    const panel = document.getElementById('savingPanel');
-    if (on) {
-        setSubmitBtn('submitting');
-        if (panel) {
-            panel.classList.add('active');
-            panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        window.addEventListener('beforeunload', _blockUnload);
-    } else {
-        if (panel) panel.classList.remove('active');
-        window.removeEventListener('beforeunload', _blockUnload);
-        setSubmitBtn(dataSubmitted ? 'correction' : 'submit');
-    }
-}
+let dataSubmitted = false;
 
 // ── Submit ────────────────────────────────────────────────────────────────────
 const SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7WDM2HP5ukVhVtQCS2fwdJ2BvKnv9xszb8gMMK273j90Njwb5_nmtfgikZSdGYReciw/exec";
 
 function submitForm() {
-    if (isSubmitting) return;
-
-    const isCorrection = dataSubmitted && !!submissionId;
-    const d = collectData();
-    const snapNow = JSON.stringify(d);
-
-    // same data already saved in Google Sheet -> do not save again
-    if (isCorrection && lastSubmittedSnap && snapNow === lastSubmittedSnap) {
-        showMessage('⚠️ Data Already Submitted! No changes found — edit something to submit a correction.', 'error');
+    if (dataSubmitted) {
+        showMessage('⚠️ Data Already Submitted! Cannot submit again.', 'error');
         return;
     }
+
+    const d = collectData();
 
     if (!d.inspOfficialName || !d.runningRoom) {
         showMessage('❌ Please fill Inspecting Official Name and Running Room before submitting.', 'error');
@@ -1092,11 +996,7 @@ function submitForm() {
     const deficiencyText = allDef.length ? allDef.join(' | ') : (d.otherRemarks || 'NIL');
 
     const params = new URLSearchParams();
-    // same submissionId on a correction => Apps Script updates the existing row instead of adding a new one
-    if (!submissionId) submissionId = newSubmissionId();
     params.append('sheet',             'Running Room');
-    params.append('action',            isCorrection ? 'update' : 'submit');
-    params.append('submissionId',      submissionId);
     params.append('cliName1',          d.cli1.name + (d.cli1.place ? ' / ' + d.cli1.place : ''));
     params.append('cliName2',          d.cli2.name + (d.cli2.place ? ' / ' + d.cli2.place : ''));
     params.append('date',              d.inspDate);
@@ -1108,8 +1008,9 @@ function submitForm() {
     params.append('railway',           d.gi.rly || '');
     params.append('deficiency',        deficiencyText);
 
-    document.getElementById('message').style.display = 'none';
-    setSubmitting(true);
+    showSaving();
+    const startT = Date.now();
+    const minWait = ms => new Promise(r => setTimeout(r, Math.max(0, ms - (Date.now() - startT))));
 
     fetch(SHEET_SCRIPT_URL, {
         method:  'POST',
@@ -1117,17 +1018,15 @@ function submitForm() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body:    params.toString()
     })
+    .then(() => minWait(1500))
     .then(() => {
         dataSubmitted = true;
-        lastSubmittedSnap = snapNow;
-        setSubmitting(false);   // button becomes ✏️ SUBMIT CORRECTION
-        autoSaveNow();          // remember "submitted" state so a reload still shows SUBMIT CORRECTION
-        showMessage(isCorrection
-            ? '✅ Correction Saved — Existing Record Updated!'
-            : '✅ Data Saved to Google Sheet Successfully!', 'success');
+        setSubmittedButton();
+        showSaved();
+        showMessage('✅ Data Saved to Google Sheet Successfully!', 'success');
     })
     .catch(err => {
-        setSubmitting(false);   // back to SUBMIT (first try) or SUBMIT CORRECTION (correction)
+        hideSaving();
         showMessage('❌ Network error: ' + err.message, 'error');
     });
 }
@@ -1392,8 +1291,7 @@ function generatePDF() {
             doc.text('Page '+pg+' of '+totalPages, pw-14, 293);
         }
 
-        doc.save('SFT7_Running_Room_'+( d.inspDate||new Date().toISOString().split('T')[0])+'.pdf');
-        showMessage('PDF generated successfully!','success');
+        handlePdfOutput(doc, 'SFT7_Running_Room_'+( (d.inspDate||new Date().toISOString().split('T')[0]).replace(/\//g,'-') )+'.pdf');
     };
 
     // Load both signatures asynchronously
@@ -1480,7 +1378,7 @@ async function toggleVoiceTyping(){
     }
 }
 function handleInputFocus(e){
-    if(document.body.classList.contains('mobile-view')){openZoomInput(e.target);return;}
+    if(e.target.id==='zoomInput'){ if(voiceEnabled) currentInput=e.target; return; }
     if(voiceEnabled){currentInput=e.target;currentInput.style.borderColor='#e74c3c';currentInput.style.boxShadow='0 0 10px rgba(231,76,60,.3)';}
 }
 function handleInputBlur(e){
@@ -1542,13 +1440,7 @@ function setAutosaveStatus(state, text) {
 function autoSaveNow() {
     try {
         const data = collectData();
-        const payload = {
-            data,
-            savedAt: new Date().toISOString(),
-            submitted:    dataSubmitted,   // already saved to Google Sheet?
-            submissionId: submissionId,    // row Record ID (used for Submit Correction)
-            submittedSnap: lastSubmittedSnap // data as last saved to the sheet
-        };
+        const payload = { data, savedAt: new Date().toISOString() };
         localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(payload));
         const t = new Date();
         const timeStr = t.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -1587,17 +1479,9 @@ function restoreAutoSaveDraft() {
         if (d.cli1) { sv('cli1Name', d.cli1.name); sv('cli1Place', d.cli1.place); sv('cli1Date', d.cli1.date); }
         if (d.cli2) { sv('cli2Name', d.cli2.name); sv('cli2Place', d.cli2.place); sv('cli2Date', d.cli2.date); }
 
-        // restore submit state: a draft that was already submitted reopens as SUBMIT CORRECTION
-        submissionId  = payload.submissionId || null;
-        dataSubmitted = !!(payload.submitted && submissionId);
-        lastSubmittedSnap = dataSubmitted ? (payload.submittedSnap || null) : null;
-        setSubmitBtn(dataSubmitted ? 'correction' : 'submit');
-
         const savedAt = payload.savedAt ? new Date(payload.savedAt).toLocaleString('en-IN') : '';
         setAutosaveStatus('saved', 'Draft restored — ' + savedAt);
-        showMessage(dataSubmitted
-            ? '✅ Last submitted draft restored (' + savedAt + ') — use SUBMIT CORRECTION to update it.'
-            : '✅ Auto-saved draft restored from: ' + savedAt, 'success');
+        showMessage('✅ Auto-saved draft restored from: ' + savedAt, 'success');
         return true;
     } catch(e) {
         return false;
@@ -1619,43 +1503,8 @@ function clearAutoSaveDraft() {
     document.getElementById('cli1Date').value = today;
     document.getElementById('cli2Date').value = today;
 
-    resetSubmitState();
     setAutosaveStatus('', 'Draft cleared');
     showMessage('🗑️ Draft cleared — all fields have been reset.', 'success');
-}
-
-// ── RESET — turns the whole form blank (fresh form, not yet submitted) ───────
-function resetForm() {
-    if (isSubmitting) return;
-    if (!confirm('🔄 RESET FORM?\n\nAll entered data will be erased and the form will turn blank.')) return;
-
-    clearTimeout(autosaveTimer);
-    try { localStorage.removeItem(AUTOSAVE_KEY); } catch(e) {}
-
-    // text inputs, textareas, selects
-    document.querySelectorAll('input[type="text"], input[type="time"], textarea').forEach(el => { el.value = ''; el.style.height = ''; });
-    document.querySelectorAll('select').forEach(el => { el.selectedIndex = 0; });
-
-    // manual "other" CLI name boxes
-    try { toggleOtherInput('cli1Name','cli1NameOther'); toggleOtherInput('cli2Name','cli2NameOther'); } catch(e) {}
-
-    // signature uploads + previews
-    ['cli1Sig','cli2Sig'].forEach(id => { const f = document.getElementById(id); if (f) f.value = ''; });
-    [['cli1SigPreview','cli1SigImg'],['cli2SigPreview','cli2SigImg']].forEach(([pv, im]) => {
-        const pe = document.getElementById(pv), ie = document.getElementById(im);
-        if (pe) pe.style.display = 'none';
-        if (ie) ie.removeAttribute('src');
-    });
-
-    // dates back to today (same as a freshly opened form)
-    const today = todayDMY();
-    ['inspDate','gi_date','cli1Date','cli2Date'].forEach(id => { const el = document.getElementById(id); if (el) el.value = today; });
-
-    // back to a never-submitted form: button = SUBMIT, new row on next submit
-    resetSubmitState();
-    setAutosaveStatus('', 'No saved draft');
-    showMessage('🔄 Form reset — all fields are blank.', 'success');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function attachAutoSaveListeners() {
@@ -1694,10 +1543,207 @@ document.addEventListener('DOMContentLoaded',()=>{
     attachAutoSaveListeners();
 
     document.addEventListener('focus',e=>{
-        if(e.target.matches('input[type="text"],textarea')&&document.body.classList.contains('mobile-view'))
-            openZoomInput(e.target);
+        /* zoom (full-screen input) removed */
     },true);
 });
+</script>
+
+<script>
+// ══ MOBILE ADD-ONS ═══════════════════════════════════════════════════════════
+function isMobileView(){ return document.body.classList.contains('mobile-view'); }
+
+// Saving overlay
+function showSaving(){
+    const ring=document.getElementById('saveRing');
+    ring.classList.remove('done');
+    document.getElementById('saveIcon').textContent='✋';
+    document.getElementById('saveTitle').textContent='⏳ PLEASE WAIT — DATA SAVING...';
+    document.getElementById('saveSub').textContent='Do not close or refresh this page';
+    document.getElementById('saveOverlay').classList.add('active');
+}
+function showSaved(){
+    document.getElementById('saveRing').classList.add('done');
+    document.getElementById('saveIcon').textContent='✅';
+    document.getElementById('saveTitle').textContent='DATA SAVED SUCCESSFULLY';
+    document.getElementById('saveSub').textContent='Your inspection has been submitted';
+    setTimeout(hideSaving, 1600);
+}
+function hideSaving(){ document.getElementById('saveOverlay').classList.remove('active'); }
+
+// Submit button → SUBMITTED
+function setSubmittedButton(){
+    const btn=document.getElementById('submitBtn'); if(!btn) return;
+    btn.disabled=true; btn.classList.add('is-submitted');
+    btn.style.opacity='0.6'; btn.style.cursor='not-allowed';
+    btn.innerHTML='<span class="btn-ico">✅</span><span class="btn-label">Submitted</span>';
+}
+function resetSubmitButton(){
+    const btn=document.getElementById('submitBtn'); if(!btn) return;
+    btn.disabled=false; btn.classList.remove('is-submitted');
+    btn.style.opacity=''; btn.style.cursor='';
+    btn.innerHTML='<span class="btn-ico">✅</span><span class="btn-label">Submit</span>';
+}
+
+// PDF output (modal on mobile, direct save on desktop)
+let lastPdf=null;
+function handlePdfOutput(doc, fileName){
+    if(!isMobileView()){
+        doc.save(fileName);
+        showMessage('PDF generated successfully!','success');
+        return;
+    }
+    lastPdf={blob:doc.output('blob'), fileName:fileName};
+    document.getElementById('pdfModal').classList.add('active');
+    downloadPdf();
+}
+function downloadPdf(){
+    if(!lastPdf) return;
+    const url=URL.createObjectURL(lastPdf.blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=lastPdf.fileName;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),15000);
+}
+async function sharePdf(){
+    if(!lastPdf) return;
+    const file=new File([lastPdf.blob], lastPdf.fileName, {type:'application/pdf'});
+    try{
+        if(navigator.canShare && navigator.canShare({files:[file]})){
+            await navigator.share({files:[file], title:lastPdf.fileName});
+        }else{
+            downloadPdf();
+            showMessage('Share not supported here — downloading instead.','error');
+        }
+    }catch(e){
+        if(e.name!=='AbortError') showMessage('Could not share PDF.','error');
+    }
+}
+function closePdfModal(){ document.getElementById('pdfModal').classList.remove('active'); }
+
+// Reset whole form
+function resetForm(){
+    if(!confirm('🔄 Reset the whole form?\n\nAll entered data and the auto-saved draft will be cleared.')) return;
+    try{ localStorage.removeItem(AUTOSAVE_KEY); }catch(e){}
+    document.querySelectorAll('input[type="text"], textarea').forEach(el=>{ el.value=''; el.style.height=''; });
+    document.querySelectorAll('select').forEach(el=>{ el.selectedIndex=0; });
+    document.querySelectorAll('input[type="file"]').forEach(el=>{ el.value=''; });
+    document.querySelectorAll('.sig-preview').forEach(el=>{ el.style.display='none'; });
+    ['cli1NameOther','cli2NameOther'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display='none'; });
+    const today=todayDMY();
+    ['inspDate','gi_date','cli1Date','cli2Date'].forEach(id=>{ document.getElementById(id).value=today; });
+    dataSubmitted=false;
+    resetSubmitButton();
+    lastPdf=null;
+    setAutosaveStatus('', 'Form reset');
+    showMessage('🔄 Form reset — all fields cleared.','success');
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Init: auto mobile view on phones + table data-labels for stacked cards
+document.addEventListener('DOMContentLoaded',()=>{
+    if(window.matchMedia('(max-width: 768px)').matches){
+        document.body.classList.add('mobile-view');
+        const t=document.getElementById('mobileToggle'); if(t) t.checked=true;
+    }
+    document.querySelectorAll('.info-section table').forEach(tbl=>{
+        const ths=[...tbl.querySelectorAll('thead th')].map(th=>th.textContent.trim());
+        tbl.querySelectorAll('tbody tr').forEach(tr=>{
+            [...tr.children].forEach((td,i)=>{
+                td.setAttribute('data-label', ths[i]==='SN' ? '' : (ths[i]||''));
+            });
+        });
+    });
+});
+</script>
+
+<script>
+// ══ CLI NAMES FROM GOOGLE SHEET ("CLI LIST" tab, column A) ═══════════════════
+const CLI_SHEET_ID  = '1H0mYFSkukeAqozr7Ez4dz-8CC9au8pmucjbGwoLUFUo';
+const CLI_SHEET_TAB = 'CLI LIST';
+const CLI_CACHE_KEY = 'SFT7_cli_list_cache';
+
+function parseCliCsv(text){
+    const names=[];
+    text.split(/\r?\n/).forEach(line=>{
+        if(!line.trim()) return;
+        let first;
+        if(line.charAt(0)==='"'){
+            const m=line.match(/^"((?:[^"]|"")*)"/);
+            first=m?m[1].replace(/""/g,'"'):'';
+        }else{
+            first=line.split(',')[0];
+        }
+        first=first.trim();
+        if(!first || first.toUpperCase()==='CLI LIST' || /^OTHER/i.test(first)) return;
+        if(!names.includes(first)) names.push(first);
+    });
+    return names;
+}
+
+function fillCliDropdowns(names){
+    if(!names || !names.length) return;
+    ['cli1Name','cli2Name'].forEach(id=>{
+        const sel=document.getElementById(id); if(!sel) return;
+        const current=sel.value;
+        const placeholder=sel.options[0] ? sel.options[0].textContent : 'Select CLI Name and HQ';
+        sel.innerHTML='';
+        const add=(val,label)=>{ const o=document.createElement('option'); if(val!=='') o.value=val; o.textContent=label; sel.appendChild(o); };
+        add('',placeholder);
+        names.forEach(n=>add(n,n));
+        add('OTHERS','OTHERS');
+        if(current){
+            if(![...sel.options].some(o=>o.value===current)){
+                // keep a draft value that is not in the sheet (before OTHERS)
+                const o=document.createElement('option'); o.textContent=current; sel.insertBefore(o, sel.lastElementChild);
+            }
+            sel.value=current;
+        }
+    });
+}
+
+async function loadCliList(){
+    // 1) instant: last cached list
+    try{
+        const cached=JSON.parse(localStorage.getItem(CLI_CACHE_KEY)||'null');
+        if(cached && cached.length) fillCliDropdowns(cached);
+    }catch(e){}
+    // 2) fresh from Google Sheet
+    try{
+        const url='https://docs.google.com/spreadsheets/d/'+CLI_SHEET_ID+'/gviz/tq?tqx=out:csv&headers=0&sheet='+encodeURIComponent(CLI_SHEET_TAB)+'&_='+Date.now();
+        const res=await fetch(url,{cache:'no-store'});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        const names=parseCliCsv(await res.text());
+        if(names.length){
+            fillCliDropdowns(names);
+            try{ localStorage.setItem(CLI_CACHE_KEY, JSON.stringify(names)); }catch(e){}
+        }
+    }catch(e){
+        console.warn('CLI list fetch failed:', e);
+        const sel=document.getElementById('cli1Name');
+        if(sel && sel.options.length<=2) showMessage('⚠️ Could not load CLI list from Google Sheet. Check internet, or choose OTHERS to type the name.','error');
+    }
+}
+document.addEventListener('DOMContentLoaded', loadCliList);
+</script>
+
+<script>
+// "OTHER..." option (OTHERS / OTHER CLI) → manual name box, for both CLI dropdowns
+function isOtherOption(v){ return /^OTHER/i.test((v||'').trim()); }
+function toggleOtherInput(selectId, inputId){
+    const sel=document.getElementById(selectId), inp=document.getElementById(inputId);
+    if(!sel||!inp) return;
+    if(isOtherOption(sel.value)){
+        inp.style.display='block';
+        inp.focus();
+    }else{
+        inp.style.display='none';
+        inp.value='';
+    }
+}
+function getCLIName(selectId, otherId){
+    const val=getVal(selectId);
+    return isOtherOption(val) ? (getVal(otherId) || val) : val;
+}
 </script>
 </body>
 </html>
